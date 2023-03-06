@@ -1,4 +1,6 @@
-### Getting Started
+# Table of Contents
+
+### [Getting Started](1_getting_started.md)
 - Version Control Systems (VCSs) and Git basics - nothing technical just what Git is, why it came about, what sets it apart, and why so many people use it.
 
 ### Git Basics
