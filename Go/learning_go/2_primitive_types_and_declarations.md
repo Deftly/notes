@@ -22,7 +22,7 @@ There are situations in Go where the type isn't explicitly declared. In those ca
 The `bool` type represents Boolean variables. Variables of `bool` can have one of two values: `true` or `false`. The zero value for a `bool` is `false`.
 
 ```Go
-var flag bool // no value assigned, set to false
+jvar flag bool // no value assigned, set to false
 var isAwesome = true
 ```
 
@@ -79,3 +79,134 @@ Go also has a type that represents a single code point. The *rune* type is an al
 
 We'll cover more about strings, including implementation details, relationships with bytes and runes, as well as advanced features in the next [section](3_composite_types.md)
 
+## Explicit Type Conversion
+Go doesn't allow automatic type promotion between variables in order to maintain clear intent and readability. You must use *type conversion* when variable types do not match. Even different sized integers and floats must be converted to the same type to interact. This makes it clear exactly what type you want without having to memorize any type conversion rules.
+
+```Go
+var x int = 10
+var y float64 = 30.2
+var z float64 = float64(x) + y
+var d int = x + int(y)
+```
+
+Since all type conversions in Go are explicit, you cannot treat another Go type as a boolean. In many languages, a nonzero number or nonempty string can be interpreted as a boolean `true`. Just like automatic type promotion, the rules for "truthy" values vary from language to language and can be confusing. So unsurprisingly, Go doesn't allow truthiness. In fact, *no other type can be converted to a bool, implicitly or explicitly*. If you want to convert from another data type to boolean, you must use one of the comparison operators. 
+
+## var Versus :=
+The most verbose way to declare a variable in Go uses the `var` keyword, an explicit type, and an assignment:
+
+```Go
+var x int = 10
+```
+
+If the default type of the literal is the expected type of your variable you leave off the type on the left side of the `=`. Conversely, if you want to declare a variable and assign it the zero value, you can keep the type and drop the `=`. Here are a few other ways you can declare variables with `var`:
+
+```Go
+var x int
+var x, y int = 10, 20
+var x, y int
+var x, y = 10, "hello"
+var (
+    x    int
+    y        = 20
+    z    int = 30
+    d, e     = 40, "hello"
+    f, g string 
+)
+```
+
+Go also supports a short declaration format. When you are within a function, you can use the `:=` operator to replace a `var` declaration that uses type inference. The following two statements do exactly the same thing:
+
+```Go
+var x = 10
+x := 10
+```
+
+Like `var`, you can declare multiple variables at once using `:=`:
+
+```Go
+var x, y = 10, "hello"
+x, y := 10, "hello"
+```
+
+The `:=` can do one thing you cannot do with `var`, it allows you to assign values to existing variables, too. So long as there is one new variable on the left hand side of the `:=`, then any of the other variables can already exist:
+
+```Go
+x := 10
+x, y := 30, "hello"
+```
+
+The one limitation on `:=` is that for declaring package level variables you must use `var` because `:=` is not legal outside of functions.
+
+When choosing between `var` and `:=` always choose what makes your intent clearest. The most common declaration style within functions is `:=`, though there are some situations within functions where you should avoid `:=`:
+- When initializing a variable to its zero value, use `var`. This makes it clear that the zero value is intended.
+- When assigning an untyped constant or a literal to a variable and the default type for the constant or literal isn't the type you want for the variable.
+- Because `:=` allows you to assign to both new and existing variables, it sometimes creates new variables when you think you are reusing existing ones([Shadowing variables]()). In those situations, explicitly declare all of your new variables with `var` to make it clear which variables are new, and then use the assignment operator to assign values to both new and old variables.
+
+You should generally avoid declaring variables outside of functions because they complicate data flow analysis and can result in subtle bugs that are hard to understand and fix.
+
+## Using const
+Many languages have a way to declare a value is immutable. In Go, this is done with the `const` keyword. At first glance, it seems to work exactly like other languages. 
+
+```Go
+const x int64 = 10
+
+const (
+  idKey   = "id"
+  nameKey = "name"
+)
+
+const z = 20 * 10
+
+func main() {
+  const y = "hello"
+
+  fmt.Println(x)
+  fmt.Println(y)
+
+  x = x + 1
+  y = "bye"
+
+  fmt.Println(x)
+  fmt.Println(y)
+}
+```
+
+If you try to run this code, compilations fails with the following error messages:
+```bash
+./const/go:20:4: cannot assign to x
+./const.go:21:4: cannot assign to y
+```
+
+Constants in Go are a way to give names to literals. They can only hold values that the compiler can figure out at compile time. This means they can be assigned:
+- Numeric literals
+- `true` and `false`
+- Strings
+- Runes
+- The built-in functions `complex`, `real`, `imag`, `len`, and `cap`
+- Expressions that consist of operators and the preceding values
+
+Go doesn't provide a way to specify that a value calculated at runtime is immutable. There are no immutable arrays, slices, maps, or structs, and there's no way to declare that a field in a struct is immutable. This isn't as limiting as it sounds. Within a function, it is clear if a variable is being modified, so immutability is less important. In [section 5(Go is Call by Value)](5_functions.md), we'll see how Go prevents modifications to variables that are passed as parameters to functions.
+
+## Typed and Untyped Constants
+Constants can be typed or untyped. An untyped constant works exactly like a literal, it has no type of its own but does have a default type that is used when no other type can be inferred. A typed constant can only be directly assigned to a variable of that type. 
+
+In general, leaving a constant untyped gives you more flexibility, however there are some situations where you want a constant to enforce a type. We'll use typed constants when we look at creating enumerations with `iota` in [section 7(iota Is for Enumerations-Sometimes)](7_types_methods_interfaces.md).
+
+```Go
+const x = 10 // Untyped constant declaration
+
+// All of the following assingments are legal:
+var y int = x
+var z float64 = x
+var d byte = x
+
+const typedX int = 10 // Typed constant declaration, this constant can only be assigned directly to an int
+```
+
+## Unused Variables
+Another Go requirement is that *every declared local variable must be read*. It is a compile-time error to declare a local variable and to not read its value.
+
+Perhaps surprisingly, the Go compiler allows you to create unread constants with `const`. This is because constants in Go are calculated at compile time and cannot have any side effects. This makes them easy to eliminate: if a constant isn't used, it is simply not included in the compiled binary.
+
+## Wrapping Up
+This section covers how to use the built-in types, declaring variables, and assignments. In the next [section](3_composite_types.md) we are going to go over composite types in GO: arrays, slices, maps, and structs. We'll also take another look at strings and runes and learn about encodings.
