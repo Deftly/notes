@@ -22,7 +22,7 @@ There are situations in Go where the type isn't explicitly declared. In those ca
 The `bool` type represents Boolean variables. Variables of `bool` can have one of two values: `true` or `false`. The zero value for a `bool` is `false`.
 
 ```Go
-jvar flag bool // no value assigned, set to false
+var flag bool // no value assigned, set to false
 var isAwesome = true
 ```
 
