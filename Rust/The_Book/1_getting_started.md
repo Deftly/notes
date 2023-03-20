@@ -64,6 +64,8 @@ The body of the `main` function holds the following code:
 There are four important details to notice here:
 - Rust style is to indent with four spaces, not a tab.
 - `println!` calls a Rust macro. If it had called a function instead, it would be entered as `println` (without the `!`). 
+- The `"Hello, world!"` string is passed as an argument to `println!`, and the string is printed to the screen.
+- The line ends with a semicolon, which indicated that this expression is over and the next one is ready to begin.
 
 ## Hello, Cargo!
 Cargo is Rust's build system and package manager, it handles things like building your code, downloading dependencies, and building those dependencies.
