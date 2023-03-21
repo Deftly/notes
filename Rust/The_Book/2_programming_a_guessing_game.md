@@ -65,4 +65,19 @@ let mut bananas = 5; // mutable
 
 > **_NOTE:_** The `//` syntax starts a comment that continues till the end of the line.
 
-We now know that `let mut guess` creates a mutable variable named guess. The equal sign(`=`) tells Rust we want to bind something to the variable now. 
+We now know that `let mut guess` creates a mutable variable named guess. The equal sign(`=`) tells Rust we want to bind something to the variable now. The value that `guess` is bound to is the result of calling `String::new`, a function that returns a new instance of a `String`. `String` is a type provided by the standard library that is a growable, UTF-8 encoded bit of text.
+
+In full, `let mut guess = String::new();` creates a mutable variable that is currently bound to a new, empty instance of `String`.
+
+## Receiving user 
+Now we'll call the `stdin` function from the `io` module, which will allow us to handle user input: 
+
+```Rust
+io::stdin()
+    .read_line(&mut guess)
+```
+
+The `stdin` function returns an instance of `std::io::Stdin`, which is a type that represents a handle to the standard input for your terminal.
+
+Next, `.read_line(&mut guess)` calls the `read_line` method on the standard input handle to get input from the user. We also pass `&mut guess` as the argument to `read_line` to tell it what string to store the input in.
+
