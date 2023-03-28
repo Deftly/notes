@@ -288,10 +288,132 @@ Most data in Go is read and written as a sequence of bytes, so the most common s
 Rather than use slice and index expressions with strings, you should extract sub-strings and code points from strings using the functions in the `strings` and `unicode/utf8` packages in the standard library. In the next [section](./4_blocks_shadows_control_structures.md), we'll see how to use a `for-range` loop to iterate over the code points in a string.
 
 ## Maps
+The map type is written as `map[keyType]valueType`. Let's take a look at a few ways to declare maps. First you can use a `var` declaration to create a map variable that's set to it's zero value:
 
+```Go
+var nilMap map[string]int
+```
 
+In this case, `nilMap` is declared to be a map with `string` keys and `int` values. The zero value for a map is `nil` and has a length of 0. Attempting to read a `nil` map always returns the zero value for the map's value type, while attempting to write to a `nil` map variable causes a panic.
 
+We can use a `:=` declaration to create a map variable by assigning it a map literal:
 
+```Go
+totalWins := map[string]int{}
+```
+
+In this case we are using an empty map literal. This is not the same as a `nil` map. It has a length of 0 but you can read and write to it. Here's what a nonempty map literal looks like:
+
+```Go
+teams := map[string][]string {
+  "Orcas": []string{"Fed", "Ralph", "Bijou"},
+  "Lions": []string{"Sarah", "Peter", "Billie"},
+  "Kittens": []string{"Waldo", "Raul", "Ze"},
+}
+```
+
+If you know how many key-value pairs you intend to put in the map, but don't know the exact values, you can use `make` to create a map with a default size:
+
+```Go
+ages := make(map[int][]string, 10)
+```
+
+Maps created with `make` still have a length of 0, and they can grow past the initially specified size.
+
+Maps are like slices in several ways:
+- Maps automatically grow as you add key-value pairs to them.
+- If you know how many key-value pairs you plan to insert you can use make to specify the initial size.
+- Passing a map to `len` returns the number of key-value pairs in a map.
+- The zero value for a map is `nil`.
+- Maps are not comparable. You can check if they are equal to `nil`, but you cannot check if two maps have identical keys and values using `==` or differ using `!=`.
+
+The key for a map can be any comparable type, this means you cannot use a slice or map as the key for a map.
+
+> **_NOTE:_** Use a map when the order of elements doesn't matter. Use a slice when ordering is important.
+
+### Reading and Writing a Map
+
+```Go
+totalWins := map[string]int{}
+totalWins["Orcas"] = 1
+totalWins["Lions"] = 2
+fmt.Println(totalWins["Orcas"])   // 1
+fmt.Println(totalWins["Kittens"]) // 0
+totalWins["Kittens"]++
+fmt.Println(totalWins["Kittens"]) // 1
+totalWins["Lions"] = 3
+fmt.Println(totalWins["Lions"])   // 3
+```
+
+### The comma ok Idiom
+As we've seen, a map returns the zero value if you ask for the value associated with a key that's not in the map. This is handy when implementing things like a counter. However, there are time when you need to find out if a key is in the map. Go provides the *comma ok idiom* to tell the difference between a key that's associated with a zero value and a key that's not in the map:
+
+```Go
+m := map[string]int{
+  "hello": 5,
+  "world": 0,
+}
+
+v, ok := m["hello"]
+fmt.Println(v, ok)   // 5 true
+
+v, ok = m["world"]
+fmt.Println(v, ok)   // 0 true 
+
+v, ok = m["goodbye"] // 0 false
+fmt.Println(v, ok)
+```
+
+The comma ok idiom assigns the results of a map read to two variables. The first gets the value associated with the key. The second value is a bool, which is usually named `ok`, which if `true` means the key is present and if `false` means the key is not present.
+
+### Deleting from Maps
+Key-value pairs are removed from a map via the built-in `delete` function:
+
+```Go
+m := map[string]int{
+  "hello": 5,
+  "world": 10,
+}
+delete(m, "hello")
+```
+
+The `delete` function takes a map and key and then removes the key-value pair with the specified key. If the key isn't present or the map is `nil`, nothing happens.
+
+### Using Maps as Sets
+Go doesn't include a set, but you can use a map to simulate some of its features. Use the key of the map for the type that you want to put into the set and use a `bool` for the value:
+
+```Go
+intSet := map[int]bool{}
+vals := []int{5, 10, 2, 5, 8, 7, 3, 9, 1, 2, 10}
+for _, v := range vals {
+  intSet[v] = true
+}
+fmt.Println(len(vals), len(intSet)) // 11 8
+fmt.Println(intSet[5])              // true
+fmt.Println(intSet[500])            // false
+if intSet[100] {
+  fmt.Println("100 is in the set")
+}
+```
+
+For sets that provide operations like union, intersection, and subtraction, you can either write one yourself or use one of the many third-party libraries that provide the functionality(We'll go over how to use third-party libraries in [section 9](./9_modules_packages_imports.md).
+
+Some people prefer to use `struct{}` for the value when a map is being used to implement a set(We'll cover structs right after this). The advantage is that an empty struct uses 0 bytes, while a boolean uses one byte. The downside is your code is more clumsy, you have less obvious assignment, and you need to use the comma ok idiom to check if a value is in the set:
+
+```Go
+intSet = map[int]struct{}{}
+vals := []int{5, 10, 2, 5, 8, 7, 3, 9, 1, 2, 10}
+for _, v := range vals {
+  intSet[v] := struct{}{}
+}
+if _, ok := intSet[5]; ok {
+  fmt.Println("5 is in the set")
+}
+```
+
+Unless you have very large sets, it is unlikely that the difference in memory usage is significant enough for you to want to do this.
+
+## Structs
 
 
 
