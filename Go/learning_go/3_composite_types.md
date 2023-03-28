@@ -60,4 +60,239 @@ Since no value is assigned to `x` it gets assigned the zero value for a slice, w
 
 A slice is also the first type we've seen that isn't comparable. It is a compile-time error to use `==` or `!=` to compare 2 slices. The only thing you can compare a slice with is `nil`:
 
+```Go
+fmt.Println(x == nil) // prints true
+```
+
+### len
+Go provides several built-in functions to work with its built-in types. We've seen `len` previously with arrays and it works for slices too.
+
+> **_NOTE:_** Functions like `len` are built in to Go because they do things that can't be done by functions that we write. `len`'s parameter can be any type of array or any type of slice. We'll also see that it works for strings, maps, and channels too. When we look at functions in [section 5](./5_functions.md) we'll see that Go doesn't let developers write functions that behave this way.
+
+### append
+the built-in `append` is used to grow slices:
+
+```Go
+var x []int
+x = append(x, 10)
+```
+
+The `append` function takes at least two parameters, a slice of any type and a value of that type. It returns a slice of the same type. The returned slice is assigned back to the slice that's passed in. 
+
+```Go
+var x = []int{1, 2, 3}
+x = append(x, 4)
+
+x = append(x, 5, 6, 7) // Can append more than one value at a time
+
+y = []int{20, 30, 40}
+x = append(x, y...) // One slice is appened onto another using the ... operator
+```
+
+It is a compile time error if your forget to assign the value returned from `append`. This may seem a bit repetitive, and we'll talk about this in greater detail in [section 5](./5_functions.md), but Go is a *call by value* language. Every time you pass a parameter to a function Go makes a copy of the value that's passed in. Passing a slice to the `append` function actually passes a copy of the slice to the function. The function adds the values to the copy and returns the copy. You then assign the returned slice back to the variable in the calling function. 
+
+### Capacity
+Each element in a slice is assigned to consecutive memory locations which makes it quick to read and write values. Every slice has a *capacity* which is the number of consecutive memory location reserved. The capacity can be larger than the length. Each time you append to a slice you increase the length, when the length reaches the capacity there is no more room to put values. If you try to add more values than there is capacity, the `append` function uses the Go runtime to allocate a new slice with a larger capacity, copying the values in the original slice to the new slice.
+
+> **_NOTE:_** The Go runtime provides services like memory allocation and garbage collection, concurrency support, networking, and implementations of built-in types and functions. The Go runtime is compiled into every Go binary. This is different from languages that use a virtual machine, which must be installed separately to allow programs written in those languages to function. Including the runtime in the binary makes it easier to distribute Go programs and avoid worries about compatibility issues between the runtime and the program.
+
+The built-in `cap` function returns the capacity of a slice. This is usually used to check if a slice is large enough to hold new data, or if a call to `make` is needed to create a new slice.
+
+```Go
+var x []int
+fmt.Println(x, len(x), cap(x))
+x = append(x, 10)
+fmt.Println(x, len(x), cap(x))
+x = append(x, 20)
+fmt.Println(x, len(x), cap(x))
+x = append(x, 30)
+fmt.Println(x, len(x), cap(x))
+x = append(x, 40)
+fmt.Println(x, len(x), cap(x))
+x = append(x, 50)
+fmt.Println(x, len(x), cap(x))
+```
+
+Here's the output of the above code, pay attention to how and when the capacity increases:
+
+```Shell
+[] 0 0
+[10] 1 1
+[10 20] 2 2
+[10 20 30] 3 4
+[10 20 30 40] 4 4
+[10 20 30 40 50] 5 8
+```
+
+While it is nice that slices grow automatically it's far more efficient size them once. If you know how many things you plan to put into a slice, create it with the correct initial capacity using the `make` function.
+
+### make
+While creating a slice with a literal or `nil` is useful neither option lets us create an empty slice that already has a length and capacity specified. To do so we use the built-in `make` function:
+
+```Go
+x := make([]int, 5)
+```
+
+This creates an `int` slice with a length and capacity of 5, all the elements of which are initialized to 0.
+
+We can also specify an initial capacity with `make`:
+
+```Go
+x := make([]int, 5, 10)
+y := make([]int, 0, 10)
+```
+
+> **_NOTE:_** Never specify a capacity that is less than the length! It is a compile time error to do so with a constant or numeric literal and a runtime panic if done with a variable.
+
+### Declaring Your Slice
+The primary goal when choosing how to declare your slice is to minimize the number of times the slice needs to grow. 
+
+If it's possible that your slice won't need to grow at all (because your function might return nothing), use a `var` declaration with no assigned value to create a `nil` slice.
+
+If you have some starting values, or if a slice's values aren't going to change then a slice literal is a good choice.
+
+If you have a good idea of how large your slice needs to be, but don't know what those values will be when you are writing the program, use `make`. Then the question is whether to specify a nonzero length or zero length and a nonzero capacity:
+- If you are using a slice as a buffer, use a nonzero length.
+- If you are *sure* that you know the exact size, you can specify the length and index into the slice to set values. This is often done for transformations, the downside is that if you have the size wrong you'll either end up with extra zero values at the end of the slice or a panic from trying to access elements that don't exist.
+- In other situations, use `make` with a zero length and specify the capacity.
+
+### Slicing Slices
+A *slice expression* creates a slice from a slice. It is written inside brackets and consists of a starting offset and ending offset, separated by a colon(:).
+
+```Go
+x := []int{1, 2, 3, 4}
+y := x[:2]  // [1 2]
+z := x[1:]  // [2 3 4]
+d := x[1:3] // [2 3]
+e := x[:]   // [1 2 3 4]
+```
+
+#### Slice share storage sometimes
+When you take a slice from a slice, you are *not* making a copy of the data. Instead, you now have two variables that are sharing memory. This means that changes to an element in a slice affect all slices that share that element.
+
+```Go
+x := []int{1, 2, 3 4}
+y := x[:2]
+z := x[1:]
+x[1] = 20
+y[0] = 10
+z[1] = 30
+fmt.Println("x:", x) // x: [10 20 30 4]
+fmt.Println("y:", y) // y: [10 20]
+fmt.Println("z:", z) // z: [20 30 4]
+```
+
+The following scenario shows multiple slices appending and overwriting each other's data:
+
+```Go
+x := make([]int, 0, 5)
+x = append(x, 1, 2, 3, 4)
+y := x[:2]
+z := x[2:]
+fmt.Println(cap(x), cap(y), cap(z))
+y = append(y, 30, 40, 50)
+x = append(x, 60)
+z = append(z, 70)
+fmt.Println("x:", x) // [1 2 30 40 70]
+fmt.Println("y:", y) // [1 2 30 40 70]
+fmt.Println("z:", z) // [30 40 70]
+```
+
+To avoid complicated situations, you should either never use `append` with a sub-slice or make sure that `append` doesn't cause an overwrite by using a *full slice expression*. This makes it clear how much memory is shared between the parent slice and the sub-slice by adding a third part which indicates the last position in the parent slice's capacity that's available for the sub-slice.
+
+```Go
+y := x[:2:2]
+z := x[2:4:4]
+```
+
+### Converting Arrays to Slices
+If you have an array you can take a slice from it using a slice expression. However, be aware that taking a slice from an array has the same memory-sharing properties as taking a slice from a slice. 
+
+```Go
+x := [4]int{5, 6, 7, 8}
+y := x[:2]
+z := x[2:]
+x[0] = 10
+fmt.Println("x:", x) // [10 6 7 8]
+fmt.Println("y:", y) // [10 6]
+fmt.Println("z:", z) // [7 8]
+```
+
+### copy
+If you need to create a slice that's independent of the original, use the built-in `copy` function:
+
+```Go
+x := []int{1, 2, 3, 4}
+y := make([]int, 4)
+num := copy(y, x)
+fmt.Println(y, num) // [1 2 3 4] 4
+```
+
+The `copy` function takes 2 parameters. The first is the destination slice and the second is the source slice. It copies as many values as it can from source to destination, limited by whichever slice is smaller, and returns the number of elements copied. 
+
+Some more ways that you can use `copy`:
+
+```Go
+x := []int{1, 2, 3, 4}
+y := make([]int, 2)
+num = copy(y, x)
+
+a := []int{1, 2, 3, 4}
+b := make([]int, 2)
+copy(b, a[2:])
+```
+
+## Strings and Runes and Bytes
+You might think that a string in Go is made out of runes, but that's not the case. Go uses a sequence of bytes to represent a string. These bytes don't have to be in any particular character encoding but several Go library functions assume that a string is composed of a sequence of UTF-8 encoded code points.
+
+Just like an array or a slice, you can use index expression with strings as well as slice expression notation:
+
+```Go
+var x string = "Hello there"
+var b byte = s[6] // "t"
+
+var s2 string = s[4:7] // "o t"
+var s3 string = s[:5]  // "Hello"
+var s4 string = s[6:]  // "there"
+```
+
+While it can be handy that Go allows the use of these notations to make substrings and extract individual entries from a string we need to be careful when doing so. Strings are immutable so they don't have any modification problems but there is another problem. A string is composed of a sequence of bytes, while a code point in UTF-8 can be anywhere from one to four bytes long. The previous example was composed entirely of code points that are one byte long in UTF-8 but that won't always be the case. Code points that take more than one byte can lead to errors if we extract only some of the bytes needed for a code point.
+
+Because of the complicated relationship between runes, strings, and bytes, Go has some interesting type conversions between these types. A single rune or byte can be converted to a string:
+
+```Go
+var a rune = 'x'
+var s string = string(a)
+var b byte = 'y'
+var s2 string = string(b)
+
+// Common bug for new Go developers
+var x int = 65
+var y = string(x)
+fmt.Println(y) // y = "A" not "65"
+```
+
+A string can be converted back and forth to a slice of bytes or a slice or runes:
+
+```Go
+var s string = "Hello, 🌞"
+var bs []byte = []byte(s)
+var rs []rune = []rune(s)
+
+fmt.Println(bs) // [72 101 108 108 111 44 32 240 159 140 158]
+fmt.Println(rs) // [72 101 108 108 111 44 32 127774]
+```
+
+Most data in Go is read and written as a sequence of bytes, so the most common string type conversions are back and forth with a slice of bytes. Slices of runes are uncommon.
+
+Rather than use slice and index expressions with strings, you should extract sub-strings and code points from strings using the functions in the `strings` and `unicode/utf8` packages in the standard library. In the next [section](./4_blocks_shadows_control_structures.md), we'll see how to use a `for-range` loop to iterate over the code points in a string.
+
+## Maps
+
+
+
+
+
+
+
 
