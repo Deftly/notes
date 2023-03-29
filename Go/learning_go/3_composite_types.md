@@ -414,6 +414,88 @@ if _, ok := intSet[5]; ok {
 Unless you have very large sets, it is unlikely that the difference in memory usage is significant enough for you to want to do this.
 
 ## Structs
+Maps are convenient for storing some kinds of data but they have limitations. They don't define an API since there's no way to constrain a map to only allow certain keys. Also, all of the values in a map must be of the same type. For these reasons, maps aren't ideal for passing data from function to function. Instead, when you have related data that you want grouped together, you should define a *struct*.
+
+```Go
+type person struct {
+	name string
+	age  int
+	pet  string
+}
+```
+
+A struct type is defined by the keyword `type`, the name of the struct type, the keyword `struct`, and a pair of braces({}). Within the braces you list the fields in the struct. You can define a struct type inside or outside of a function, though structs defined in a function can only be used within that function(More on functions in [section 5](./5_functions.md)). 
+
+Once a struct type is declared we can define variables of that type:
+
+```Go
+var fred person // var declaration
+bob := person{} // struct literal declaration
+```
+
+Unlike maps, there is no difference between assigning an empty struct literal and not assigning a value at all. Both initialize fields in the struct to their zero values. 
+
+A field in a struct is accessed with dotted notation:
+
+```Go
+bob.name = "Bob"
+fmt.Println(beth.name)
+```
+
+### Anonymous Structs
+You can also declare that a variable implements a struct type without first giving the struct type a name. This is called an *anonymous struct*:
+
+```Go
+var person struct {
+  name string
+  age  int
+  pet  string
+}
+
+person.name = "bob"
+person.age = 50
+person.pet = "dog"
+
+pet := struct {
+  name string
+  kind string
+}{
+  name: "Fido",
+  kind: "dog",
+}
+```
+
+In the above example, the types of the variables `person` and `pet` are anonymous structs. There are 2 common situations where anonymous structs are useful. The first is when translating external data into a struct or a struct into external data(like JSON or protocol buffers). This is called *unmarshaling* and *marshaling*  data. Writing tests is another place where they are common. We'll use a slice of anonymous structs when writing table-driven tests in [section 13](./13_writing_tests.md).
+
+### Comparing and Converting Structs
+Whether or not a struct is comparable depends on the struct's fields. If it is entirely composed of comparable types then it is comparable, but if it has a slice, map, or channel field then it is not. 
+
+Just as Go doesn't allow comparisons between variables of different types, Go doesn't allow comparisons between variables that represent structs of different types. It does allow conversion from one struct type to another *if the fields of both structs have the same names, order, and types*. 
+
+If one of the two struct variables being compared has an anonymous struct type you can compare them without a type conversion *if both structs have the fields of both structs have the same names, order, and types*. You can also assign between named and anonymous structs if the previous conditions are true.
+
+```Go
+type firstPerson struct {
+  name string
+  age int
+}
+
+f := firstPerson{
+  name: "Bob",
+  age: 50,
+}
+
+var g struct {
+  name string
+  age int
+}
+
+g = f
+fmt.Println(f == g)
+```
+
+## Wrapping Up
+In this section we covered more about strings, and how to use the built-in generic container types, slices, and maps. We also looked at how to build our own composite types via structs. In the next [section](./4_blocks_shadows_control_structures.md) we'll look at Go's control structures, `for`, `if/else`, and `switch`. We'll also learn how Go organizes code into blocks, and how the different block levels can lead to surprising behavior. 
 
 
 
