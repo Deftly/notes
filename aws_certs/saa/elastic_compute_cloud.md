@@ -21,3 +21,38 @@ Within a region we have a virtual private cloud(VPC) within which we have our re
 Each instance has a hard drive, in this case a virtual hard drive, known as an Elastic Block Store(EBS) Volume where the data is stored. We also have a security group which determines which ports, protocols, and IP addresses we can connect from. This functions as a firewall securing access to our instances. Security groups can be used to control both inbound and outbound traffic.
 
 We also need an Internet Gateway, this is attached to a VPC and enables access to and from the internet. When we want to connect to our EC2 instance we actually connect to the Internet Gateway and from there to the EC2 instance. 
+
+## EC2 User Data
+User data is code that runs when the instance starts up for the first time. The following is an example that installs a web server on our instance:
+
+```Shell
+#!/bin/bash
+yum update -y
+yum install -y httpd
+systemctl start httpd
+systemctl enable httpd
+```
+
+User data is limited to 16KB and can be uploaded either as text or as a file.
+
+## EC2 Metadata
+This is information available about a particular EC2 instance and it is available at the following address: http://169.254.169.254/latest/meta-data. This is a local address on your EC2 instance which you can use to find a variety of information about the instance itself. Here's an example:
+
+```Shell
+[ec2-user@ip-172-31-42-248 ~]$ curl http://169.254.169.254/latest/meta-data
+ami-id
+ami-launch-index
+ami-manifest-path
+block-device-mapping/
+events/
+hibernation/
+hostname
+indentity-credentials/
+instance-action
+instance-id
+instance-life-cycle
+instance-type
+local-hostname
+local-ipv4
+```
+
