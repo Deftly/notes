@@ -105,4 +105,13 @@ Also note that EIP addresses that are allocated to your account but unused will 
 ## Network Address Translation(NAT) for Public Addresses
 Let's take an example of an EC2 instance with a network interface with a private and public IP. If you were to run a command like `ip addr show eth0` from the command line of the instance you would only see the private IP. The instance doesn't know anything about the public IP and the reason for that is because the public IP is associated with the private IP externally. This associated is done by the Internet Gateway which performs 1:1 NAT. 
 
+## Private Subnets and Bastion Hosts
+![private_subnet_bastion_host](./assets/private_subnet_bastion_host.png)
+
+In the above example we have a region, a VPC within that region, an AZ, and some public and private subnets. The public subnet has a route table associated with it. The first address is the CIDR block for the overall VPC, meaning that any destination within this address block will be routed locally using the VPC router. The second rule means any other address will be routed using the internet gateway. 
+
+The private subnet has a separate route table and the key difference is that it doesn't have a route to the internet. You cannot attach an internet gateway to a private subnet, and instances within the private subnet do not have public IPs. Communication between public and private subnets can still occur but there is no outside access.
+
+To connect from the outside world to an instance in a private subnet we could first connect to an instance in a public subnet, this is sometime referred to as a bastion host or a jump host, and from there connect to the instance in the private subnet using the VPC router. 
+
 
