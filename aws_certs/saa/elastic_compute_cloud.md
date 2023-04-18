@@ -56,3 +56,9 @@ local-hostname
 local-ipv4
 ```
 
+## Accessing Services - Access Keys and IAM Roles
+There will often be occasions where EC2 instances need to connect to other services. For instance, saving data to a storage service or database. There are few ways to do this, the first being access keys. 
+
+Access keys are stored on the instance itself and are associated with a user account that has a permissions policy. This gives the instance access to whatever operations are allowed by that permissions policy. The downside to this approach is that access keys are stored on the file system of the instance which isn't very secure.
+
+A better way to do this is to use an IAM role. We can use an instance profile to connect an IAM role to an EC2 instance. The instance will gain access to whatever permissions are associated with the role provides. The great thing about this is that no credentials are stored on the EC2 instance. 
