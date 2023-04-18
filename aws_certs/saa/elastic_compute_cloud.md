@@ -114,4 +114,11 @@ The private subnet has a separate route table and the key difference is that it 
 
 To connect from the outside world to an instance in a private subnet we could first connect to an instance in a public subnet, this is sometime referred to as a bastion host or a jump host, and from there connect to the instance in the private subnet using the VPC router. 
 
+## NAT Gateways and NAT Instances
+NAT Gateways and NAT Instances are both used to enable instances deployed in private subnets to connect to the internet. This is outbound only, if we wanted bidirectional traffic we would just deploy our instances into a public subnet.
 
+![nat_gateway](./assets/nat_gateway.png)
+
+A NAT gateway is deployed in a public subnet, it will have a private IP and an EIP which it uses to communicate with the internet gateway on behalf of the private instances. The route table for the private subnet now has a route pointing to the NAT gateway. Just like with the internet gateway route in the public route table it is for 0.0.0.0/0. With this configuration our private subnet instances can now use its private IP address to connect to the private IP address of the NAT gateway which can then forward the traffic to the internet gateway.NAT gateways are an AWS service that you can deploy.
+
+NAT instances are a lot less popular now with the introduction of the NAT gateway. It is not an AWS service, it is just an specially configured EC2 instance which can be deployed using an AMI with "amzn-ami-vpc-nat" in its name. You must also disable source/destination checks in order to allow the NAT instance to function as a network address translator. 
