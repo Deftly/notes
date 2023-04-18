@@ -50,6 +50,6 @@ Once we have a launch template or launch configuration we start creating the ASG
 
 **Standby State** - Used to put an instance in the *InService* state into the *Standby* state, this gives an opportunity to update or troubleshoot the instance.
 
-**Lifecycle Hooks* - Used to perform custom actions by pausing instances as the ASG launches or terminates them. These have a few potential use cases:
+**Lifecycle Hooks** - Used to perform custom actions by pausing instances as the ASG launches or terminates them. These have a few potential use cases:
   - Run a script to download and install software after launching but you are unsure on the time needed so the health check grace period may not be enough. With lifecycle hooks you can pause the instance until they receive a confirmation from the script that the processes have completed.
   - Pause an instance to process data before a scale-in(termination)
