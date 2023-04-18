@@ -101,3 +101,8 @@ An Elastic IP is also a public IP but it's a static address and doesn't change a
 In the event that an instance fails and we have applications that are pointing to it's IP address we will want to is assign that IP address to another instance. To do this we have a two options. We can move the network interface and assign it to another instance within the same AZ. Another option is to move the Elastic IP address to a new instance with its own network interface. This allows you to fail over into a different AZ since the Elastic IP address can be remapped across AZs but the network interfaces cannot. 
 
 Also note that EIP addresses that are allocated to your account but unused will incur charges.
+
+## Network Address Translation(NAT) for Public Addresses
+Let's take an example of an EC2 instance with a network interface with a private and public IP. If you were to run a command like `ip addr show eth0` from the command line of the instance you would only see the private IP. The instance doesn't know anything about the public IP and the reason for that is because the public IP is associated with the private IP externally. This associated is done by the Internet Gateway which performs 1:1 NAT. 
+
+
