@@ -92,3 +92,12 @@ When EC2 instances are launched a subnet is chosen, an interface is then attache
 - EFA are used for HPC and ML use cases
 - Tightly coupled applications
 - Can be used with all instance types
+
+## Public, Private and Elastic IP(EIP) Addresses
+Public IP addresses are dynamic addresses, meaning they might change. When you stop your instance and start it back up again it will pick up a new IPV4 public address, the private address will stay the same. This means you should not use the public IP address in application code because it can change over time. 
+
+An Elastic IP is also a public IP but it's a static address and doesn't change and we can associate an Elastic IP with a network interface.
+
+In the event that an instance fails and we have applications that are pointing to it's IP address we will want to is assign that IP address to another instance. To do this we have a two options. We can move the network interface and assign it to another instance within the same AZ. Another option is to move the Elastic IP address to a new instance with its own network interface. This allows you to fail over into a different AZ since the Elastic IP address can be remapped across AZs but the network interfaces cannot. 
+
+Also note that EIP addresses that are allocated to your account but unused will incur charges.
