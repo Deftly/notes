@@ -62,3 +62,33 @@ There will often be occasions where EC2 instances need to connect to other servi
 Access keys are stored on the instance itself and are associated with a user account that has a permissions policy. This gives the instance access to whatever operations are allowed by that permissions policy. The downside to this approach is that access keys are stored on the file system of the instance which isn't very secure.
 
 A better way to do this is to use an IAM role. We can use an instance profile to connect an IAM role to an EC2 instance. The instance will gain access to whatever permissions are associated with the role provides. The great thing about this is that no credentials are stored on the EC2 instance. 
+
+## EC2 Placement Groups
+EC2 placement groups are a way to control how and where AWS deploys EC2 instances within and across AZs. 
+
+### Cluster
+This packs instances closely together inside an AZ. This enables workloads to achieve low latency network performance and high throughput for inter-node communication which is often required for High Performance Computing(HPC) applications.
+
+### Partition
+This spreads your instances across logical partitions such that groups of instances in different partitions don't share underlying hardware. This is typically used for large distributed and replicated workloads such as Hadoop, Cassandra, and Kafka.
+
+### Spread
+This strictly places a small group of instances across distinct underlying hardware to reduce correlated failures.
+
+## Network Interfaces(ENI, ENA, EFA)
+![ec2_network_interfaces](./assets/ec2_network_interfaces.png)
+
+When EC2 instances are launched a subnet is chosen, an interface is then attached to that subnet. The actual instance itself isn't in the subnet it is within the AZ, this means it can be attached to multiple subnets through different adapters. In the above example the instance has an eth0 adapter in a public subnet with both a public and private IP address, and an eth1 adapter in a private subnet within the same AZ. It is not possible to attach an adapter from a subnet in a different AZ. 
+
+### Elastic network interface(ENI)
+- ENI is the basic adapter for when there are no specific high-performance requirements 
+- Can be used with all instance types
+
+### Elastic Network Adapter(ENA)
+- ENA provides enhanced networking performance and provides much higher bandwidth and lower inter-instance latency
+- It can only be used with supported instance types
+
+### Elastic Fabric Adapter(EFA)
+- EFA are used for HPC and ML use cases
+- Tightly coupled applications
+- Can be used with all instance types
