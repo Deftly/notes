@@ -160,4 +160,26 @@ NAT instances are a lot less popular now with the introduction of the NAT gatewa
 - Applies if the instance becomes impaired due to underlying hardware or platform issues
 - Recovered instance is identical to original instance
 
-## Nitro Instances and Nitro Enclaves
+## AWS Nitro System
+Nitro is the underlying platform for the next generation of EC2 instances. It's been around for a few years but it is evolving and more and more instance types are being supported on the nitro system, that includes both virtualized and bare metal instances.
+
+The functions of the underlying infrastructure, including the hypervisor, are broken up into separate hardware modules. This includes:
+- Nitro cards for VPC
+- Nitro cards for EBS
+- Nitro for Instance Storage
+- Nitro security chip
+- Nitro hypervisor
+- Nitro Enclaves
+
+The key benefits of the Nitro system are improved performance, security, and innovation. Performance is close to bare metal for virtualized instances. ENA and EFA are both based on the nitro system. They have higher network performance(e.g. 100Gbps), and are optimized for HPC workloads. There is also support for dense storage instances which go up to 60TB. 
+
+### Nitro Enclaves
+- These are isolated compute environments on hardened virtual machines 
+- There is no persistent storage, interactive access, or external networking
+- Uses cryptographic attestation to ensure only authorized code is running
+- Integrates with AWS Key Management Service(KMS)
+- Protect and securely process highly sensitive data:
+  - Personally identifiable information
+  - Healthcare data
+  - Financial data
+  - Intellectual Property data
