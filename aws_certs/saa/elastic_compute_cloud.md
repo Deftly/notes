@@ -183,3 +183,27 @@ The key benefits of the Nitro system are improved performance, security, and inn
   - Healthcare data
   - Financial data
   - Intellectual Property data
+
+## EC2 Pricing Options and Use Cases
+![ec2_pricing_options](./assets/ec2_pricing_options.png)
+
+### EC2 Billing
+- There is per second billing with a minimum of 1 minute for Windows and Linux instances in On-Demand, Reserved, and Spot forms
+- There is also hourly billing for Windows and commercial Linux distros like RHEL and SUSE
+- EBS volumes are billed per second with a minimum of 1 minute
+
+### EC2 Reserved Instances(RIs)
+The term is either 1 or 3 years and there is both a standard RI and Convertible RI. The standard RI allows you to change AZs, instance size for Linux, and networking type. Convertible RI lets you change everything you could with standard RI but you can additionally change the instance family, OS, tenancy, and payment option. The payment option can be all upfront, partial upfront, or no upfront.
+
+When the attributes of an instance you launch match the attributes of an RI the discount is applied. The attributes include the instance type, OS type, tenancy(default or dedicated), and the AZ and Region.
+
+Scheduled RI is where you match the capacity reservation to a recurring schedule with a minimum of 1200 hrs per year. An example would be an application that runs 6 hours a day, 4 days a week = 1248 hours per year. This seems to be a deprecated functionality but still may appear on the exam.
+
+### Savings Plans
+There are two types of savings plans: compute savings and EC2 savings plan. With the compute savings plan it is an hourly commitment to usage of Fargate, Lambda, and EC2 with any region, family, size, tenancy, and OS. The EC2 savings plan is only for EC2 within a selected region and instance family, with any size, tenancy, and OS. Both plans are 1-3 year, hourly commitments.
+
+### EC2 Spot Instances
+- Spot Fleet: This launches and maintains the number of Spot/On-Demand instances to meet specified target capacity
+- EC2 Fleet: Launches and maintains specified number of Spot/On-Demand/Reserved instances in a single API call
+- There is a 2 minute warning if AWS need to reclaim capacity, this is available via instance metadata and CloudWatch Events
+- Spot Block: No longer supported but it provided uninterrupted spot instances for 1-6 hrs at 30-45% discount 
