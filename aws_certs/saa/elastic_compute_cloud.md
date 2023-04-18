@@ -94,7 +94,7 @@ When EC2 instances are launched a subnet is chosen, an interface is then attache
 - Can be used with all instance types
 
 ## Public, Private and Elastic IP(EIP) Addresses
-Public IP addresses are dynamic addresses, meaning they might change. When you stop your instance and start it back up again it will pick up a new IPV4 public address, the private address will stay the same. This means you should not use the public IP address in application code because it can change over time. 
+Public IP addresses are dynamic addresses, meaning they might change. When you stop your instance and start it back up again it will pick up a new IPv4 public address, the private address will stay the same. This means you should not use the public IP address in application code because it can change over time. 
 
 An Elastic IP is also a public IP but it's a static address and doesn't change and we can associate an Elastic IP with a network interface.
 
@@ -122,3 +122,42 @@ NAT Gateways and NAT Instances are both used to enable instances deployed in pri
 A NAT gateway is deployed in a public subnet, it will have a private IP and an EIP which it uses to communicate with the internet gateway on behalf of the private instances. The route table for the private subnet now has a route pointing to the NAT gateway. Just like with the internet gateway route in the public route table it is for 0.0.0.0/0. With this configuration our private subnet instances can now use its private IP address to connect to the private IP address of the NAT gateway which can then forward the traffic to the internet gateway.NAT gateways are an AWS service that you can deploy.
 
 NAT instances are a lot less popular now with the introduction of the NAT gateway. It is not an AWS service, it is just an specially configured EC2 instance which can be deployed using an AMI with "amzn-ami-vpc-nat" in its name. You must also disable source/destination checks in order to allow the NAT instance to function as a network address translator. 
+
+## EC2 Instance Lifecycle
+![instance_lifecycle](./assets/instance_lifecycle.png)
+
+### Stopping EC2 Instances
+- Only available for EBS backed instances
+- No charge for stopped instances
+- EBS volumes remain attached(chargeable)
+- Data in RAM is lost
+- Instance is typically migrated to a different host
+- Private IPv4 addresses and IPv6 addresses retained, public IPv4 addresses released
+- Associated EIPs are retained
+
+### Hibernating EC2 Instances
+- Available to on-demand or reserved Linux instances
+- Contents of RAM saved to EBS volume
+- Must be enabled for hibernation when launched
+- When started(after hibernation):
+  - The EBS root volume is restored to its previous state
+  - The RAM contents are reloaded into memory
+  - The processes that were previously running on the instance are resumed
+  - Previously attached data values are reattached and the instance retains its instance ID
+
+### Rebooting EC2 Instances
+- Equivalent to an OS reboot
+- DNS name and all IPv4 and IPv6 addresses are retained
+- Does not affect billing
+
+### Terminating EC2 Instances
+- Cannot recover a terminated instance
+- By default root EBS volumes are deleted
+  - Additional volumes added are not deleted by default
+
+### Recovering EC2 Instances
+- CloudWatch can be used to monitor system status checks and recover instances if needed
+- Applies if the instance becomes impaired due to underlying hardware or platform issues
+- Recovered instance is identical to original instance
+
+## Nitro Instances and Nitro Enclaves
