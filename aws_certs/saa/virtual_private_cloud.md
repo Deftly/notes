@@ -44,3 +44,25 @@ You can create multiple VPCs per region, limited to 5 by default but you can req
 - When you create a VPC you must specify a range of IPv4 addresses for the VPC in the form of a CIDR block
 - You have full control over who has access to the AWS resources inside your vpc
 - A default VPC is created in each region with a public subnet in each AZ
+
+## Defining VPC CIDR Blocks
+- CIDR block size can be between /16 and /28
+- The CIDR block must not overlap with any existing CIDR block that's associated with the VPC
+- You cannot increase or decrease the size of an existing CIDR block
+- The first four and last IP address are not available for use
+- AWS recommend you use CIDR blocks from the RFC 1918 ranges:
+
+| RFC 1918 ranges                                   | Example CIDR Block                                          |
+|---------------------------------------------------|-------------------------------------------------------------|
+| 10.0.0.0 - 10.255.255.255 (10/8 prefix)           | Your VPC must be /16 or smaller, for example, 10.0.0.0/16   |
+| 172.16.0.0 - 172.31.255.255 (172.16/12 prefix)    | Your VPC must be /16 or smaller, for example, 172.31.0.0/16 |
+| 192.168.0.0 - 192.168.255.255 (192.168/16 prefix) | Your VPC can be smaller, for example 192.168.0.0/20         |
+
+### Additional Considerations
+- Ensure you have enough networks and hosts
+- Bigger CIDR blocks are typically better since they are more flexible
+- Smaller subnets are OK for most use cases
+- Consider deploying application tiers per subnet
+- Split your HA resources across subnets in different AZs
+- VPC Peering requires non-overlapping CIDR blocks, this is across all VPCs in all Regions/accounts you want to connect
+- **Avoid overlapping CIDR blocks** as much as possible
