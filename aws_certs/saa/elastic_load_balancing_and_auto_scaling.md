@@ -82,3 +82,25 @@ There are few different types of Elastic Load Balancers on AWS and it's importan
 
 ### NLB
 ![nlb_routing](./assets/nlb_routing.png)
+
+## EC2 Scaling Policies
+
+### Dynamic Scaling - Target Tracking
+![target_tracking](./assets/target_tracking.png)
+
+In the above example we have an ASG with 4 instances and we are tracking the ASGAverageCPUUtilization. Once CloudWatch has reported that the Average CPU exceeds our limit it will try to get it back under the threshold. Instance metrics are not counted until the *warm up* time has expired. When using target tracking AWS recommends scaling up metrics with a 1 minute frequency.
+
+### Dynamic Scaling - Simple Scaling
+![simple_scaling](./assets/simple_scaling.png)
+
+With Simple scaling the ASG has an alarm set to some metric, in this case CPU utilization greater than or equal to 60%. When the alarm triggers it will launch 2 new instances then wait 300 seconds before allowing another scaling activity.
+
+### Dynamic Scaling - Step Scaling
+![step_scaling](./assets/step_scaling.png)
+
+Very similar to simple scaling but how far we exceed the metric for which we have an alarm will trigger different responses. In this example if we exceed 60% CPU utilization by 20% we will launch four new instances instead of just two. 
+
+### Scheduled Scaling
+![scheduled_scaling](./assets/scheduled_scaling.png)
+
+With scheduled scaling we can set a time at which the ASG will scale and how many instances we want it to scale by. When configuring a scheduled scaling policy we define a desired, minimum, and maximum number of instances along with the start time and how often it occurs. 
