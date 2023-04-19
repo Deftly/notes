@@ -15,3 +15,16 @@ There may be situations where we want to extend some AWS services into an on-pre
 
 **Regional Edge Caches** and **Edge locations** are part of the CloudFront Network, which is Contend Delivery Network(CDN) service. This is used to get content closer to end users for better performance. 
 
+## IPv4 Addressing Primer
+![dns_resolution](./assets/dns_resolution.png)
+
+### Structure of an IPv4 Address
+IP addresses are written in dotted decimal notation `192.168.0.1`, each part of the address is a binary octet.
+
+### Networks and Hosts
+Every IP address has a network ID and a host ID. The network ID will be the same for every computer on a particular network, the host ID will be unique for each computer on the network. The way we know which portion is the network ID and which is the host ID is through a subnet mask. Every bit in the subnet mask that is 1 is a value that are used for the network id and every bit that is a 0 is used for a host id.
+
+![network_and_host_id](./assets/network_and_host_id.png)
+
+![subnet_mask_ex](./assets/subnet_mask_ex.png)
+
