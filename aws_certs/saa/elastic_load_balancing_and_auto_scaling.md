@@ -104,3 +104,22 @@ Very similar to simple scaling but how far we exceed the metric for which we hav
 ![scheduled_scaling](./assets/scheduled_scaling.png)
 
 With scheduled scaling we can set a time at which the ASG will scale and how many instances we want it to scale by. When configuring a scheduled scaling policy we define a desired, minimum, and maximum number of instances along with the start time and how often it occurs. 
+
+## Cross-Zone Load Balancing
+When cross-zone load balancing is enabled each load balancer node distributes traffic across the registered targets in all enabled AZs. When it is disabled each load balancer distributes traffic only across the registered targets in its AZ. ALBs have cross-zone load balancing always enabled while NLBs and GLBs have it disabled by default. Cross zone load balancing enables you to better distribute traffic.
+
+## Session State and Session Stickiness
+When using ELBs the applications on the EC2 instances are stateless. Any persistent data that we need to store must be stored outside the EC2 instance. And if a user is redirected to a different instance they shouldn't have to re-authenticate. 
+
+One technique to achieve this is to store session state data externally. Session data such as authentication details can be stored in a DynamoDB table or some other form of external storage. Then if a user is directed to a different instance that authentication information can be retrieved from the external storage so they don't have to log in again.
+
+Another technique is called sticky sessions. When a user connects to an instance a cookie is generated which binds a client to that instance for the lifetime of the cookie. If the client connection gets dropped and they reconnect the cookie will tell the load balancer which instance to connect back to. In this case session state data like authentication details might be stored locally on the instance itself. If the instance fails then the user will be directed somewhere else and the session data will be lost. Sticky sessions can be used with an external store for more resiliency though there is some added latency with that approach.
+
+## Secure Listeners for ELB
+Most websites and web applications are secured with SSL/TLS certificates. This means the connections from users through to the web applications are encrypted in transit. With an ELB we can achieve this using a secure listener. The way we enable this is slightly different between ALBs and NLBs.
+
+### ALB Secure listener
+![alb_secure_listener](./assets/alb_secure_listener.png)
+
+### NLB Secure Listener
+![nlb_secure_listener](./assets/nlb_secure_listener.png)

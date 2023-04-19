@@ -208,12 +208,3 @@ There are two types of savings plans: compute savings and EC2 savings plan. With
 - There is a 2 minute warning if AWS need to reclaim capacity, this is available via instance metadata and CloudWatch Events
 - Spot Block: No longer supported but it provided uninterrupted spot instances for 1-6 hrs at 30-45% discount 
 
-## Cross-Zone Load Balancing
-When cross-zone load balancing is enabled each load balancer node distributes traffic across the registered targets in all enabled AZs. When it is disabled each load balancer distributes traffic only across the registered targets in its AZ. ALBs have cross-zone load balancing always enabled while NLBs and GLBs have it disabled by default. Cross zone load balancing enables you to better distribute traffic.
-
-## Session State and Session Stickiness
-When using ELBs the applications on the EC2 instances are stateless. Any persistent data that we need to store must be stored outside the EC2 instance. And if a user is redirected to a different instance they shouldn't have to re-authenticate. 
-
-One technique to achieve this is to store session state data externally. Session data such as authentication details can be stored in a DynamoDB table or some other form of external storage. Then if a user is directed to a different instance that authentication information can be retrieved from the external storage so they don't have to log in again.
-
-Another technique is called sticky sessions. When a user connects to an instance a cookie is generated which binds a client to that instance for the lifetime of the cookie. If the client connection gets dropped and they reconnect the cookie will tell the load balancer which instance to connect back to. In this case session state data like authentication details might be stored locally on the instance itself. If the instance fails then the user will be directed somewhere else and the session data will be lost. Sticky sessions can be used with an external store for more resiliency though there is some added latency with that approach.
