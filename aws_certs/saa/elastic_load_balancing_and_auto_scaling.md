@@ -75,3 +75,10 @@ There are few different types of Elastic Load Balancers on AWS and it's importan
 - Forwards traffic to the Target Group(TG) specified in the listener rules
 - Exchanges traffic with appliances using the GENEVE protocol on port 6081
 
+## Routing with ALB and NLB
+
+### ALB
+![alb_routing](./assets/alb_routing.png)
+
+### NLB
+![nlb_routing](./assets/nlb_routing.png)
