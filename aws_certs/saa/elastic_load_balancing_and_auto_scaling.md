@@ -53,3 +53,25 @@ Once we have a launch template or launch configuration we start creating the ASG
 **Lifecycle Hooks** - Used to perform custom actions by pausing instances as the ASG launches or terminates them. These have a few potential use cases:
   - Run a script to download and install software after launching but you are unsure on the time needed so the health check grace period may not be enough. With lifecycle hooks you can pause the instance until they receive a confirmation from the script that the processes have completed.
   - Pause an instance to process data before a scale-in(termination)
+
+## Types of Elastic Load Balancers
+There are few different types of Elastic Load Balancers on AWS and it's important to know in which cases to use each one.
+
+### Application Load Balancer(ALB)
+- Operates at the request level(layer 7)
+- Supports path-based routing, host-based routing, query string parameter-based routing, and source IP address-based routing
+- Supports instances, IP addresses, Lambda functions and containers as targets
+
+### Network Load Balancer(NLB)
+- Operates at the connection level(layer 4)
+- Routes connections based on IP protocol data
+- Offers ultra high performance, low latency and TLS offloading at scale
+- Can have a static IP/Elastic IP
+- Supports UDP and static IP addresses as targets 
+
+### Gateway Load Balancer(GLB)
+- Used in front of virtual appliances such as firewalls, Intrusion Detection Systems(IDS)/Intrusion Prevention Systems(IPS), and deep packet inspection systems
+- Operates at Layer 3 - listens for packets on all ports
+- Forwards traffic to the Target Group(TG) specified in the listener rules
+- Exchanges traffic with appliances using the GENEVE protocol on port 6081
+
