@@ -28,3 +28,19 @@ Every IP address has a network ID and a host ID. The network ID will be the same
 
 ![subnet_mask_ex](./assets/subnet_mask_ex.png)
 
+## VPC Overview
+A VPC is a logically isolated portion of the AWS cloud within a region that you can deploy resource into. Subnets are created within AZs and you can have multiple subnets within the same AZ but they cannot span multiple AZs. The **VPC router** takes care of all routing for connections that go outside of a subnet and is configured using route tables. In order to connect to the internet we also need an internet gateway, this is attached to a VPC and you only ever have one per VPC. The internet gateway handles both ingress and egress traffic. 
+
+You can create multiple VPCs per region, limited to 5 by default but you can request an increase if necessary. Each VPC has a CIDR block, the overall block of addresses from which you then create the addresses assigned to your subnets.
+
+![multiple_vpcs](./assets/multiple_vpcs.png)
+
+### VPC Core Knowledge
+- A VPC is a virtual network dedicated to your AWS account
+- Analogous to having your own data center inside AWS
+- It is logically isolated from other virtual networks in the AWS Cloud
+- Provides complete control over the virtual network environment including selection of IP ranges, creation of subnets, and configuration of route tables and gateways
+- A VPC spans all AZs within a region
+- When you create a VPC you must specify a range of IPv4 addresses for the VPC in the form of a CIDR block
+- You have full control over who has access to the AWS resources inside your vpc
+- A default VPC is created in each region with a public subnet in each AZ
