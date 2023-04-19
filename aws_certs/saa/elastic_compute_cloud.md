@@ -207,3 +207,6 @@ There are two types of savings plans: compute savings and EC2 savings plan. With
 - EC2 Fleet: Launches and maintains specified number of Spot/On-Demand/Reserved instances in a single API call
 - There is a 2 minute warning if AWS need to reclaim capacity, this is available via instance metadata and CloudWatch Events
 - Spot Block: No longer supported but it provided uninterrupted spot instances for 1-6 hrs at 30-45% discount 
+
+## Cross-Zone Load Balancing
+When cross-zone load balancing is enabled each load balancer node distributes traffic across the registered targets in all enabled AZs. When it is disabled each load balancer distributes traffic only across the registered targets in its AZ. ALBs have cross-zone load balancing always enabled while NLBs and GLBs have it disabled by default. Cross zone load balancing enables you to better distribute traffic.
