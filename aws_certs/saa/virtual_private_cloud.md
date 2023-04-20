@@ -66,3 +66,17 @@ You can create multiple VPCs per region, limited to 5 by default but you can req
 - Split your HA resources across subnets in different AZs
 - VPC Peering requires non-overlapping CIDR blocks, this is across all VPCs in all Regions/accounts you want to connect
 - **Avoid overlapping CIDR blocks** as much as possible
+
+## Security Groups and Network ACLs
+**Network ACLs** are applied at the subnet level, and they are used to filer traffic entering and exiting a subnet. A **security group** is applied at the network interface level of EC2 instances. We can have the same security group applied to instances in different subnets.
+
+Security groups support allow rules only, and there is essentially an implicit deny rule for anything that is not explicitly allowed. Network ACLs have both allow and deny rules. Rules are processed in order which means that once you reach a rule that either allows or denies processing stops there so the ordering of rules is very important. 
+
+![security_groups_and_network_acls](./assets/security_groups_and_network_acls.png)
+
+### Stateful vs Stateless Firewalls
+A stateful firewall will allow return traffic automatically, this is what a security group is. A stateless firewall will check for an allow rule for both inbound and outbound connections, which is what a network ACL does.
+
+### Security Group Best Practices
+![security_group_best_practices](./assets/security_group_best_practices.png)
+
