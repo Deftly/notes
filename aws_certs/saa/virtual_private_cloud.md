@@ -89,3 +89,6 @@ The problem with VPC peering is that it doesn't support transitive peering. This
 
 ![vpc_peering](./assets/vpc_peering.png)
 
+As we increase the number of VPCs it can become unweilding having a full mesh topology and there are other solutions that can be used instead.
+
+To actually set up the peering connection we need to take care of two things. First we need to update our security groups to allow traffic from the CIDR block range of the other VPC. Then we have to update the route table with the CIDR block range of the other vpc as the destination mapped to the peering-id as the target. 
