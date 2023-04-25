@@ -80,3 +80,12 @@ A stateful firewall will allow return traffic automatically, this is what a secu
 ### Security Group Best Practices
 ![security_group_best_practices](./assets/security_group_best_practices.png)
 
+## VPC Peering
+VPC peering allows for internal routing between addresses between VPCs, and by internally we mean it doesn't go out to the internet it uses the AWS global network to route traffic between VPCs. This traffic is encrypted when moving between regions and uses either private IPv4 or IPv6 addreses. 
+
+When we want resources in different VPCs to communicate using VPC peering we can establish a VPC peering connection between our VPCs. This enables routing using private IPv4 and IPv6 addresses. The CIDR blocks for the VPCs must not overlap, which makes it very important to carefully consider what CIDR blocks you use for your VPCs.
+
+The problem with VPC peering is that it doesn't support transitive peering. This means we need a dedicated peering connection from each VPC to every other VPC we want to connect to as show below:
+
+![vpc_peering](./assets/vpc_peering.png)
+
