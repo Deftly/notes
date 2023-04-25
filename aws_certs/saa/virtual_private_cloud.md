@@ -114,4 +114,8 @@ Here we provision on S3 gateway endpoint. This uses a route table entry to direc
 ![vpc_service_provider_model](./assets/vpc_service_provider_model.png)
 
 ## AWS Client VPN
+This is a way that you can connect your client computer to a VPC via a VPN connection. This allows you to communicate with resources in that VPC, for example connecting directly to a VPC using private IP addresses. Because it is a VPN it is encrypted end to end. Now let's look at how to set this up:
 
+![aws_client_vpn](./assets/aws_client_vpn.png)
+
+We create a VPN endpoint which is associated with client VPN network interfaces created in the subnets, this is the method with which the VPN connection is then able to communicate with resources in the subnets. The client computer will be running some VPN software, this is not AWS software, which will establish a connection with the VPN endpoint over SSL/TLS(port 443). The VPN endpoint will perform source network address translation from the CIDR block associated with the VPN client to the CIDR block associated with the VPC. 
