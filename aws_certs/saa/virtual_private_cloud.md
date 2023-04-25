@@ -108,7 +108,7 @@ Here we have an Instance running in a private subnet and we don't want it's traf
 
 Here we provision on S3 gateway endpoint. This uses a route table entry to direct traffic to the gateway endpoint. The gateway endpoint can be secured using IAM policies and you can add bucket policies to only allow access to traffic coming from the gateway endpoint.
 
-**_NOTE:_** that gateway endpoints are limited to S3 and DynamoDB
+> **_NOTE:_** that gateway endpoints are limited to S3 and DynamoDB
 
 ### Service Provider Model
 ![vpc_service_provider_model](./assets/vpc_service_provider_model.png)
