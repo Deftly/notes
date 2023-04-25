@@ -94,4 +94,21 @@ As we increase the number of VPCs it can become unwieldy having a full mesh topo
 To actually set up the peering connection we need to take care of two things. First we need to update our security groups to allow traffic from the CIDR block range of the other VPC. Then we have to update the route table with the CIDR block range of the other vpc as the destination mapped to the peering-id as the target. 
 
 ## VPC Endpoints
-Some AWS services are private, meaning they run within a VPC, whereas other
+Some AWS services are private, meaning they run within a VPC like EC2, whereas other services are public because they have a public endpoint like S3. If we want to connect to S3 without using the public internet we can use VPC endpoints.
+
+There are two types of VPC endpoints: There is a VPC interface endpoint and a VPC gateway endpoint. The gateway endpoint is one we can use for S3 and the interface one is slightly different and used for other services. We'll take a look at an interface endpoint example first.
+
+### VPC Interface Endpoints
+![vpc_interface_endpoint](./assets/vpc_interface_endpoint.png)
+
+Here we have an Instance running in a private subnet and we don't want it's traffic routed to the public internet via a NAT gateway. So instead we provision an interface endpoint which creates an ENI in the subnet. The instance can then connect via the ENI to public services using private IP addresses. Each interface endpoint can connect to one of many AWS services. 
+
+### VPC Gateway Endpoints
+![vpc_gateway_endpoint](./assets/vpc_gateway_endpoint.png)
+
+Here we provision on S3 gateway endpoint. This uses a route table entry to direct traffic to the gateway endpoint. The gateway endpoint can be secured using IAM policies and you can add bucket policies to only allow access to traffic coming from the gateway endpoint.
+
+Note that gateway endpoints are limited to S3 and DynamoDB
+
+### Service Provider Model
+![vpc_service_provider_model](./assets/vpc_service_provider_model.png)
