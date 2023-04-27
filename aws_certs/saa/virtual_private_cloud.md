@@ -121,10 +121,17 @@ This is a way that you can connect your client computer to a VPC via a VPN conne
 We create a VPN endpoint which is associated with client VPN network interfaces created in the subnets, this is the method with which the VPN connection is then able to communicate with resources in the subnets. The client computer will be running some VPN software, this is not AWS software, which will establish a connection with the VPN endpoint over SSL/TLS(port 443). The VPN endpoint will perform source network address translation from the CIDR block associated with the VPN client to the CIDR block associated with the VPC. 
 
 ## AWS Site-to-Site VPN
-Site to Site VPN would be used to connect a customer data center or office location into AWS and have a private network established over the internet(encrypted connection) through which you could tunnel through your traffic. 
+Site-to-Site VPN would be used to connect a customer data center or office location into AWS and have a private network established over the internet(encrypted connection) through which you could tunnel through your traffic. 
 
 ![site_to_site_vpn](./assets/site_to_site_vpn.png)
 
 What we do is create a Virtual Private Gateway(VGW) which is deployed on the AWS site and a Customer gateway is created on the customer side. With those two components we can establish an encrypted VPN connection that supports either static routes or BGP peering/routing. Our subnet route tables can be configured to have the CIDR block of the customer data center as a destination and map it to VGW as the target.
 
+## AWS VPN CloudHub
+This isn't a service but rather a pattern that you can use when using site-to-site VPN technology.
 
+![aws_vpn_cloudhub](./assets/aws_vpn_cloudhub.png)
+
+Here we have a VPC with a VGW and multiple on-premises environments that we want to connect, using a VPN, to AWS. To do this we deploy a customer gateway into each on-premises environment, each of these gateways has a unique Border Gateway Protocol(BGP) Autonomous System Number(ASN). BGP is a protocol that is used for advertising routes to different parts of your network. A connection is established between our one VGW on AWS and each customer gateway. Network traffic may go between a on-premises environment to the VPC as well as from one on-premises environment to another on-premises environment via the VGW. 
+
+In this way AWS site-to-site vpn can be used to establish a routing topology that connects multiple customer offices as well as the VPC itself.
