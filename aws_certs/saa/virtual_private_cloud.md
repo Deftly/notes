@@ -135,3 +135,10 @@ This isn't a service but rather a pattern that you can use when using site-to-si
 Here we have a VPC with a VGW and multiple on-premises environments that we want to connect, using a VPN, to AWS. To do this we deploy a customer gateway into each on-premises environment, each of these gateways has a unique Border Gateway Protocol(BGP) Autonomous System Number(ASN). BGP is a protocol that is used for advertising routes to different parts of your network. A connection is established between our one VGW on AWS and each customer gateway. Network traffic may go between a on-premises environment to the VPC as well as from one on-premises environment to another on-premises environment via the VGW. 
 
 In this way AWS site-to-site vpn can be used to establish a routing topology that connects multiple customer offices as well as the VPC itself.
+
+## AWS Direct Connect(DX)
+VPNs typically run over the public internet, this means we are subject to bandwidth constraints and potential latency issues. One solution to this is to use direct connect or DX for short. DX gives you a private connection into AWS.
+
+![direct_connect_dx](./assets/direct_connect_dx.png)
+
+DX is physical fibre connection to AWS running at either 1Gbps, 10Gbps, and even 100Gbps in some locations. DX is quite expensive but it can make sense for organizations that transfer large volumes of data. 
