@@ -71,9 +71,32 @@ To copy more than one file to a directory named *dir*:
 $ cp file1 file2 file3 dir
 ```
 
+### 2.3.3 `mv`
+The `mv`(move) command works much like `cp`. In its simplest form it renames a file.
+```Shell
+$ mv file1 file2
+```
+You can also use `mv` to move files to other directories the same way as `cp`.
 
+### 2.3.4 `touch`
+The `touch` command can create a file. If the target file already exists, `touch` doesn't change the file, but it does update the file's modification timestamp.
+```Shell
+$ touch file
+```
 
+### 2.3.5 `rm`
+The `rm` command deletes(removes) a file. After you remove a file, it's usually gone from your system and generally cannot be undeleted unless you restore it from a backup.
+```Shell
+$ rm file
+```
 
+### 2.3.6 `echo`
+The `echo` command prints its arguments to the standard output:
+```Shell
+$ echo Hello again.
+Hello again.
+```
+The `echo` command very useful for finding expressions of shell globs(wildcards such as *) and variables(such as $HOME) which we will see later in this section
 
 
 
