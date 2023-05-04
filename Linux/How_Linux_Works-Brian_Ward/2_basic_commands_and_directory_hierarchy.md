@@ -44,8 +44,32 @@ Standard input and output are often abbreviated as *stdin* and *stdout*. Many co
 Most of the following programs take multiple arguments, and some have loads of options and formats, too many to cover here but we'll go over the basics.
 
 ### 2.3.1 `ls`
+The `ls` command lists the contents of a directory. The default is the current directory but you can add any directory or file as an argument. It also has many useful options like `ls -l` for a detailed listing and `ls -f` to display file type information.
 
+```Shell
+$ ls -l 
+total 4
+drwxr-xr-x. 1 siddharth siddharth   6 May  4 08:57 aws_certs
+drwxr-xr-x. 1 siddharth siddharth 438 May  4 08:57 git
+drwxr-xr-x. 1 siddharth siddharth  22 May  4 08:57 Go
+drwxr-xr-x. 1 siddharth siddharth  52 May  4 08:57 Linux
+-rw-r--r--. 1 siddharth siddharth   8 May  4 08:57 README.md
+drwxr-xr-x. 1 siddharth siddharth  16 May  4 08:57 Rust
+```
 
+### 2.3.2 `cp`
+In its simplest form, `cp` copies files, for example to copy *file1* to *file2*:
+```Shell
+$ cp file1 file2
+```
+You can also copy a file to another directory, keeping the same file name in that directory: 
+```Shell
+$ cp file1 dir
+```
+To copy more than one file to a directory named *dir*:
+```Shell
+$ cp file1 file2 file3 dir
+```
 
 
 
