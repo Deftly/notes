@@ -72,11 +72,46 @@ Modern CPUs include a *memory management unit(MMU)* than enables a memory access
 A device is typically accessible only in kernel mode because improper access could crash the machine. A notable difficult is that different devices rarely have the same programming interface, even if the devices perform the same task(for example, two different network cards). Therefore, device drivers have traditionally been part of the kernel, and they strive to present a uniform interface to user processes in order to simplify the software developer's job.
 
 ### 1.3.4 System Calls and Support
+*System calls*(or *syscalls*) perform specific tasks that a user process alone cannot do well or at all. For example, opening, reading, and writing to files all involve system calls.
 
+Two system calls, `fork()` and `exec()`, are important in understanding how processes start:
+- **`fork()`** - When a process calls `fork()`, the kernel creates a nearly identical copy of the process.
+- **`exec()`** - When a process calls `exec(*program*)`, the kernel loads and starts *program*, replacing the current process.
 
+Other than init(see [section 6](./6_how_user_space_starts.md), all new user processes on a Linux system start as a result of `fork()` and most of the time you also run `exec()` to start a new program instead of running a copy of an existing process.
 
+![system_call_example](./assets/system_call_example.png)
 
+In the very simple example above we have a shell process running and when you enter the `ls` command in the terminal window, the shell that's running inside the terminal window calls `fork()` to create a copy of the shell. Then the new copy of the shell calls `exec(ls)` to run `ls`.
 
+> **_NOTE:_** `exec()` refers to a family of system calls that all perform a similar task but differ in programming. There is also a variant on a process called a thread which will be covered in [section 8](./8_a_closer_look_at_processes_and_resource_utilization.md).
+
+The kernel also supports user processes with features other than traditional system calls, the most common of which are *pseudo-devices*. Pseudo-devices look like devices to user processes, but they're implemented purely in software. For example, the kernel random number generator device(*/dev/random*).
+
+## 1.4 User Space
+*User space* refers to the memory for the entire collection of running processes. Though all processes are essentially equal from the kernel's point of view, they perform different tasks for users. There is a rudimentary service level structure to the kinds of system components that user processes represent. Basic services are at the bottom(closest to the kernel), utility services are in the middle, and applications that users touch are at the top. 
+
+![user_process_levels](./assets/user_processes_levels.png)
+
+The bottom levels tend to consist of small components that perform single, uncomplicated tasks. The middle level has larger components such as mail, print, and database services. Finally, components at the top level perform complicated tasks that the user often controls directly. Components also use other components, generally either at the same service level or below.
+
+All that being said, there are no hard and fast rules in user space and these "rules" are just general guidelines on how things tend to be.
+
+## 1.5 Users
+A *user* is an entity that can run processes and own files. The kernel identifies users using simple numeric identifiers called *user IDs*(more on how usernames correspond to user IDs in [section 7](./7_system_configuration-logging_system-time_batch-jobs_and_users.md))
+
+Users exist primarily to support permissions and boundaries. Every user-space process has a user *owner* and processes are said to run as the owner. A user may terminate or modify the behavior of its own processes(within certain limits), but it cannot interfere with the other users' processes. Users may also own files and choose whether to share them with other users.
+
+A Linux system normally has a number of users in addition to the ones that correspond to the real human being who use the system. The most important user to know about is *root*. The root user is an exception to the preceding rules as they can terminate and alter another user's processes and access any file on the local system. For this reason, root is known as the *superuser*. A person who can operate as root, has root access, is an administrator an o traditional Unix system.
+
+> **_NOTE:_** Operating as root can be dangerous. It can be difficult to identify and correct mistakes because the system will let you do anything, even if it is harmful to the system. Also note, as powerful as the root user is, it still runs in the operating system's user mode, not kernel mode.
+
+*Groups* are sets of users. The primary purpose of groups is to allow a user to share file access to other members of a group.
+
+## 1.6 Looking Forward
+In this section we saw what constitutes a *running* Linux system. User processes make up the environment users directly interact with; the kernel manages processes and hardware. Both the kernel and processes reside in memory.
+
+In the [next section](./2_basic_commands_and_directory_hierarchy.md) we'll look at some user-space basics as well as long-term storage(disk, files, etc.).
 
 
 
