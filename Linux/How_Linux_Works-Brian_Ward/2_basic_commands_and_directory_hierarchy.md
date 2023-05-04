@@ -96,7 +96,165 @@ The `echo` command prints its arguments to the standard output:
 $ echo Hello again.
 Hello again.
 ```
-The `echo` command very useful for finding expressions of shell globs(wildcards such as *) and variables(such as $HOME) which we will see later in this section
+The `echo` command very useful for finding expressions of shell globs(wildcards such as `*`) and variables(such as `$HOME`) which we will see later in this section.
+
+## 2.4 Navigating Directories
+
+### 2.4.1 `cd`
+
+### 2.4.2 `mkdir`
+
+### 2.4.3 `rmdir`
+
+### 2.4.4 Shell Globbing ("Wildcards")
+
+## 2.5 Intermediate Commands
+
+### 2.5.1 `grep`
+
+### 2.5.2 `less`
+
+### 2.5.3 `pwd`
+
+### 2.5.4 `diff`
+
+### 2.5.5 `file`
+
+### 2.5.6 `find` and `locate`
+
+### 2.5.7 `head` and `tail`
+
+### 2.5.8 `sort`
+
+## 2.6 Changing Your Password and Shell
+
+## 2.7 Dot Files
+
+## 2.8 Environment and Shell Variables 
+
+## 2.9 The Command Path
+
+## 2.10 Special Characters
+
+## 2.11 Command-Line Editing
+
+## 2.12 Text Editors
+
+## 2.13 Getting Online Help
+
+## 2.14 Shell Input and Output
+
+### 2.14.1 Standard Error
+
+### 2.14.2 Standard Input Redirection
+
+## 2.15 Understanding Error Messages
+
+### 2.15.1 Anatomy of a Unix Error Message
+
+### 2.15.2 Common Errors
+
+## 2.16 Listing and Manipulating Processes
+
+### 2.16.1 Command Options
+
+### 2.16.2 Process Termination
+
+### 2.16.3 Job Control
+
+### 2.16.4 Background Processes
+
+## 2.17 File Modes and Permissions
+
+### 2.17.1 Modifying Permissions
+
+### 2.17.2 Working with Symbolic Links
+
+## 2.18 Archiving and Compressing Files
+
+### 2.18.1 `gzip`
+
+### 2.18.2 `tar`
+
+### 2.18.3 Compressed Archives (.tar.gz)
+
+### 2.18.4 `zcat`
+
+### 2.18.5 Other Compression Utilities
+
+## 2.19 Linux Directory Hierarchy Essentials
+
+### 2.19.1 Other Root Subdirectories
+
+### 2.19.2 The */usr* Directory
+
+### 2.19.3 Kernel Location
+
+## 2.20 Running Commands as the Superuser
+
+### 2.20.1 `sudo`
+
+### 2.20.2 */etc/sudoers*
+
+### 2.20.3 sudo Logs
+
+## 2.21 Looking Forward
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
