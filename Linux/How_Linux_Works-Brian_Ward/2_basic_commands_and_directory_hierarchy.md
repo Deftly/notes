@@ -99,7 +99,7 @@ Hello again.
 The `echo` command very useful for finding expressions of shell globs(wildcards such as `*`) and variables(such as `$HOME`) which we will see later in this section.
 
 ## 2.4 Navigating Directories
-The Unix directory hierarchy starts at */* and is called the *root directory*. The directory separator is the slash(/). There are several standard subdirectories in the root directory like */usr* which we'll cover in [section 2.19](./2_basic_commands_and_directory_hierarchy.md#2.19-linux-directory-hierarchy-essentials)
+The Unix directory hierarchy starts at */* and is called the *root directory*. The directory separator is the slash(/). There are several standard subdirectories in the root directory like */usr* which we'll cover in [section 2.19](./2_basic_commands_and_directory_hierarchy.md##2.19-linux-directory-hierarchy-essentials)
 
 ### 2.4.1 cd
 
