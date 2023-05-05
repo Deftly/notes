@@ -43,7 +43,7 @@ Standard input and output are often abbreviated as *stdin* and *stdout*. Many co
 ## 2.3 Basic Commands
 Most of the following programs take multiple arguments, and some have loads of options and formats, too many to cover here but we'll go over the basics.
 
-### 2.3.1 `ls`
+### 2.3.1 ls
 The `ls` command lists the contents of a directory. The default is the current directory but you can add any directory or file as an argument. It also has many useful options like `ls -l` for a detailed listing and `ls -f` to display file type information.
 
 ```Shell
@@ -57,7 +57,7 @@ drwxr-xr-x. 1 siddharth siddharth  52 May  4 08:57 Linux
 drwxr-xr-x. 1 siddharth siddharth  16 May  4 08:57 Rust
 ```
 
-### 2.3.2 `cp`
+### 2.3.2 cp
 In its simplest form, `cp` copies files, for example to copy *file1* to *file2*:
 ```Shell
 $ cp file1 file2
@@ -71,26 +71,26 @@ To copy more than one file to a directory named *dir*:
 $ cp file1 file2 file3 dir
 ```
 
-### 2.3.3 `mv`
+### 2.3.3 mv
 The `mv`(move) command works much like `cp`. In its simplest form it renames a file.
 ```Shell
 $ mv file1 file2
 ```
 You can also use `mv` to move files to other directories the same way as `cp`.
 
-### 2.3.4 `touch`
+### 2.3.4 touch
 The `touch` command can create a file. If the target file already exists, `touch` doesn't change the file, but it does update the file's modification timestamp.
 ```Shell
 $ touch file
 ```
 
-### 2.3.5 `rm`
+### 2.3.5 rm
 The `rm` command deletes(removes) a file. After you remove a file, it's usually gone from your system and generally cannot be undeleted unless you restore it from a backup.
 ```Shell
 $ rm file
 ```
 
-### 2.3.6 `echo`
+### 2.3.6 echo
 The `echo` command prints its arguments to the standard output:
 ```Shell
 $ echo Hello again.
@@ -100,31 +100,31 @@ The `echo` command very useful for finding expressions of shell globs(wildcards 
 
 ## 2.4 Navigating Directories
 
-### 2.4.1 `cd`
+### 2.4.1 cd
 
-### 2.4.2 `mkdir`
+### 2.4.2 mkdir
 
-### 2.4.3 `rmdir`
+### 2.4.3 rmdir
 
 ### 2.4.4 Shell Globbing ("Wildcards")
 
 ## 2.5 Intermediate Commands
 
-### 2.5.1 `grep`
+### 2.5.1 grep
 
-### 2.5.2 `less`
+### 2.5.2 less
 
-### 2.5.3 `pwd`
+### 2.5.3 pwd
 
-### 2.5.4 `diff`
+### 2.5.4 diff
 
-### 2.5.5 `file`
+### 2.5.5 file
 
-### 2.5.6 `find` and `locate`
+### 2.5.6 find and locate
 
-### 2.5.7 `head` and `tail`
+### 2.5.7 head and tail
 
-### 2.5.8 `sort`
+### 2.5.8 sort
 
 ## 2.6 Changing Your Password and Shell
 
@@ -172,13 +172,13 @@ The `echo` command very useful for finding expressions of shell globs(wildcards 
 
 ## 2.18 Archiving and Compressing Files
 
-### 2.18.1 `gzip`
+### 2.18.1 gzip
 
-### 2.18.2 `tar`
+### 2.18.2 tar
 
 ### 2.18.3 Compressed Archives (.tar.gz)
 
-### 2.18.4 `zcat`
+### 2.18.4 zcat
 
 ### 2.18.5 Other Compression Utilities
 
@@ -186,15 +186,15 @@ The `echo` command very useful for finding expressions of shell globs(wildcards 
 
 ### 2.19.1 Other Root Subdirectories
 
-### 2.19.2 The */usr* Directory
+### 2.19.2 The /usr Directory
 
 ### 2.19.3 Kernel Location
 
 ## 2.20 Running Commands as the Superuser
 
-### 2.20.1 `sudo`
+### 2.20.1 sudo
 
-### 2.20.2 */etc/sudoers*
+### 2.20.2 /etc/sudoers
 
 ### 2.20.3 sudo Logs
 
