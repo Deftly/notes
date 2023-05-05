@@ -101,14 +101,40 @@ The `echo` command very useful for finding expressions of shell globs(wildcards 
 ## 2.4 Navigating Directories
 The Unix directory hierarchy starts at */* and is called the *root directory*. The directory separator is the slash(/). There are several standard subdirectories in the root directory like */usr* which we'll cover in [section 2.19](#219-linux-directory-hierarchy-essentials)
 
+When you refer to a file or directory, you specify a *path* or *pathname*. When a path starts with */* it's a *full* or *absolute path*. A path component identified by two dots(..) specifies the parent of a directory and one dot(.) refers to the current directory. A path not beginning with */* is called a *relative path*.
+
 ### 2.4.1 cd
+The *current working directory* is the directory that a process(such as the shell) is currently in. Each process can independently set its own current working directory, the `cd` command changes the shell's current working directory:
+```Shell
+$ cd dir
+```
+
+If you omit *dir*, the shell returns to your *home directory*, the directory where you started when you first logged in, this is often abbreviated with the *~* symbol.
+
+> **_NOTE:_** The `cd` command is a shell built-in. It wouldn't work as a separate program because if it were to run as a subprocess, it could not(normally) change its parent's current working directory.
 
 ### 2.4.2 mkdir
+The `mkdir` command creates a new directory *dir*:
+```Shell
+$ mkdir dir
+```
 
 ### 2.4.3 rmdir
+The `rmdir` command removes the directory *dir*:
+```Shell
+$ rmdir dir
+```
+
+If *dir* isn't empty, this command fails. To quickly delete a non-empty directly instead use `rm -r dir`, this will delete the directory and all its contents. Be careful when using this command as it can do serious damage especially if run as the superuser. The `-r` option specifies *recursive delete*, always double check your command before you run it.
 
 ### 2.4.4 Shell Globbing ("Wildcards")
+The shell can match simple patterns to file and directory names, a process known as *globbing*. The simplest of these is the glob character(*), which tells the shell to match any number of arbitrary characters. The following prints a list of all the files in the current directory:
+```Shell
+$ echo *
+```
 
+The shell matches arguments containing globs to filenames, substitutes those filenames for those arguments, and then runs the revised command. This substitution is called *expansion*, here are some examples:
+- *at\** expands to all filenames that start with *at*
 ## 2.5 Intermediate Commands
 
 ### 2.5.1 grep
