@@ -274,14 +274,74 @@ The `head` and `tail` commands allow you to quickly view a portion of a file or 
 The `sort` command quickly puts the lines of a text file in alphanumeric order. If the file's lines start with numbers and you want to sort in numerical order, use the `-n` option. The `-r` option reverse the order of the sort.
 
 ## 2.6 Changing Your Password and Shell
+Use the `passwd` command to change your password. You'll be prompted for your old password and then prompted for your new password twice. The best passwords tends to be long "nonsense" sentences that are easy to remember, try to aim for 16 characters or more.
+
+You can change your shell with the `chsh` command(some other shells are `zsh`, `ksh`, or `tcsh`), but keep in mind these notes all assume the use of `bash` and some of the examples may not work with other shells.
 
 ## 2.7 Dot Files
+Dot files are configuration files and directories whose names begin with a dot(.), and are hidden so if you run just `ls` you won't see them listed. To list them use `ls -a`. Some common dot files are *.bashrc* and *.gitconfig*, there are also dot directories such as *.ssh*.
+
+There's nothing special about dot files or directories other than some programs don't show them by default in order to reduce clutter. Additionally, shell globs don't match dot files unless you explicitly use a patter such as `.*`.
 
 ## 2.8 Environment and Shell Variables 
+The shell can store temporary variables, called *shell variables*, containing the values of text strings. They are useful for keeping track of values in scripts, and some shell variables control the way the shell behaves(For example, the `bash` shell reads the `PS1` variable before displaying the prompt). 
+
+To assign a value to a shell variable, use the equal sing(=) like below:
+```Shell
+$ STUFF=blah
+```
+
+The preceding example sets the value of the variable named `STUFF` to `blah`. To access this variable, use `$STUFF`(for example, try `echo $STUFF`). We'll cover the many uses of shell variables in [section 11](./11_introduction_to_shell_scripts.md)
+
+> **+_NOTE:_** Don't put any spaces around the `=` when assigning a variable.
+
+An *environment variable* is like a shell variable but it's not specific to the shell. All processes on Unix systems have environment variable storage. The main difference between environment and shell variables is that the operating system passes all of your shell's environment variables to programs that the shell runs, whereas shell variables cannot be accessed in commands that you run.
+
+You assign an environment variable with the shell's `export` command like so:
+```Shell
+$ STUFF=blah
+$ export STUFF
+```
+
+Because child processes inherit environment variables from their parent, many programs read them for configuration and options. For example, you can put your favorite `less` command-line options in the `LESS` environment variable, and `less` will use those options when you run it.(Many manual pages contain a section labeled ENVIRONMENT that describes these variables.)
 
 ## 2.9 The Command Path
+`PATH` is a special environment variable that contains the *command path* or just *path* for short. It is a list of system directories that the shell searches when trying to locate a command. For example, when you run `ls`, the shell searches the directories listed in `PATH` for the `ls` program. If programs with the same name appear in several directories in the path, the shell runs the first matching program.
+
+If your run `echo $PATH`, you'll see the path components are separated by colons(:).
+```Shell
+$ echo $PATH
+/home/siddharth/.cargo/bin:/home/siddharth/.local/bin:/home/siddharth/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/usr/local/go/bin:/usr/local/go/bin:/home/siddharth/.local/share/nvim/mason/bin:/usr/local/go/bin
+```
+
+You can tell the shell to look in more places for programs by changing the `PATH` variable like so:
+```Shell
+$ PATH=$PATH:dir
+```
+
+> **_NOTE:_** You can accidentally wipe out your entire path if you mistype `$PATH` when modifying your path. However this damage isn't permanent as you can just start a new shell. To create lasting effects you need to mistype when editing certain configuration files and even then it still isn't too difficult to rectify.
 
 ## 2.10 Special Characters
+When discussing Linux with others, you should know some of the common names for special characters that you will encounter.
+
+| Characters  | Name(s)   | Uses   |
+|-------------- | -------------- | -------------- |
+| * | star, asterisk  | Regular expression, glob character  |
+| . | dot | Current directory, file/hostname delimiter |
+| ! | bang | Negation, command history |
+| \| | pipe | Command pipes |
+| / | (forward)slash | Directory delimiter, search command |
+| \ | backslash | Literals, macros (never directories) |
+| $ | dollar | Variables, end of line |
+| ' | tick, (single)quote | Literal strings |
+| ` | backtick, backquote | Command substitution |
+| " | double quote | Semi-literal strings |
+| ^ | caret | Negation, beginning of line | 
+| ~ | tilde, squiggle | Negation, directory shortcut |
+| # | hash, sharp, pound | Comments, preprocessor, substitutions |
+| [ ] | (square)brackets | Ranges |
+| { } | brace, (curly)brackets | Statement blocks, ranges |
+| _ | underscore, under | substitute for space used when spaces aren't wanted or allowed |
 
 ## 2.11 Command-Line Editing
 
