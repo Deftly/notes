@@ -1,70 +1,4 @@
 # Basic Command And Directory Hierarchy
-<!--toc:start-->
-- [Basic Command And Directory Hierarchy](#basic-command-and-directory-hierarchy)
-  - [2.1 The Bourne Shell: /bin/sh](#21-the-bourne-shell-binsh)
-  - [2.2 Using the Shell](#22-using-the-shell)
-    - [2.2.1 The Shell Window](#221-the-shell-window)
-    - [2.2.2 cat](#222-cat)
-    - [2.2.3 Standard Input and Standard Output](#223-standard-input-and-standard-output)
-  - [2.3 Basic Commands](#23-basic-commands)
-    - [2.3.1 ls](#231-ls)
-    - [2.3.2 cp](#232-cp)
-    - [2.3.3 mv](#233-mv)
-    - [2.3.4 touch](#234-touch)
-    - [2.3.5 rm](#235-rm)
-    - [2.3.6 echo](#236-echo)
-  - [2.4 Navigating Directories](#24-navigating-directories)
-    - [2.4.1 cd](#241-cd)
-    - [2.4.2 mkdir](#242-mkdir)
-    - [2.4.3 rmdir](#243-rmdir)
-    - [2.4.4 Shell Globbing ("Wildcards")](#244-shell-globbing-wildcards)
-  - [2.5 Intermediate Commands](#25-intermediate-commands)
-    - [2.5.1 grep](#251-grep)
-    - [2.5.2 less](#252-less)
-    - [2.5.3 pwd](#253-pwd)
-    - [2.5.4 diff](#254-diff)
-    - [2.5.5 file](#255-file)
-    - [2.5.6 find and locate](#256-find-and-locate)
-    - [2.5.7 head and tail](#257-head-and-tail)
-    - [2.5.8 sort](#258-sort)
-  - [2.6 Changing Your Password and Shell](#26-changing-your-password-and-shell)
-  - [2.7 Dot Files](#27-dot-files)
-  - [2.8 Environment and Shell Variables](#28-environment-and-shell-variables)
-  - [2.9 The Command Path](#29-the-command-path)
-  - [2.10 Special Characters](#210-special-characters)
-  - [2.11 Command-Line Editing](#211-command-line-editing)
-  - [2.12 Text Editors](#212-text-editors)
-  - [2.13 Getting Online Help](#213-getting-online-help)
-  - [2.14 Shell Input and Output](#214-shell-input-and-output)
-    - [2.14.1 Standard Error](#2141-standard-error)
-    - [2.14.2 Standard Input Redirection](#2142-standard-input-redirection)
-  - [2.15 Understanding Error Messages](#215-understanding-error-messages)
-    - [2.15.1 Anatomy of a Unix Error Message](#2151-anatomy-of-a-unix-error-message)
-    - [2.15.2 Common Errors](#2152-common-errors)
-  - [2.16 Listing and Manipulating Processes](#216-listing-and-manipulating-processes)
-    - [2.16.1 Command Options](#2161-command-options)
-    - [2.16.2 Process Termination](#2162-process-termination)
-    - [2.16.3 Job Control](#2163-job-control)
-    - [2.16.4 Background Processes](#2164-background-processes)
-  - [2.17 File Modes and Permissions](#217-file-modes-and-permissions)
-    - [2.17.1 Modifying Permissions](#2171-modifying-permissions)
-    - [2.17.2 Working with Symbolic Links](#2172-working-with-symbolic-links)
-  - [2.18 Archiving and Compressing Files](#218-archiving-and-compressing-files)
-    - [2.18.1 gzip](#2181-gzip)
-    - [2.18.2 tar](#2182-tar)
-    - [2.18.3 Compressed Archives (.tar.gz)](#2183-compressed-archives-targz)
-    - [2.18.4 zcat](#2184-zcat)
-    - [2.18.5 Other Compression Utilities](#2185-other-compression-utilities)
-  - [2.19 Linux Directory Hierarchy Essentials](#219-linux-directory-hierarchy-essentials)
-    - [2.19.1 Other Root Subdirectories](#2191-other-root-subdirectories)
-    - [2.19.2 The /usr Directory](#2192-the-usr-directory)
-    - [2.19.3 Kernel Location](#2193-kernel-location)
-  - [2.20 Running Commands as the Superuser](#220-running-commands-as-the-superuser)
-    - [2.20.1 sudo](#2201-sudo)
-    - [2.20.2 /etc/sudoers](#2202-etcsudoers)
-    - [2.20.3 sudo Logs](#2203-sudo-logs)
-  - [2.21 Looking Forward](#221-looking-forward)
-<!--toc:end-->
 
 This section will cover the Unix commands and utilities you'll frequently encounter. You might ask why Unix commands? This is because Linux is a Unix flavor at heart, and you can use all these commands on BSD and other Unix-flavored systems. Knowing these commands can also boost your understanding of the kernel as many correspond directly to system calls. 
 
@@ -344,22 +278,168 @@ When discussing Linux with others, you should know some of the common names for 
 | _ | underscore, under | substitute for space used when spaces aren't wanted or allowed |
 
 ## 2.11 Command-Line Editing
+As you work with the shell, notice that you can edit the command line using the left and right arrow keys, as well as page through previous commands using the up and down arrows. This is standard on most Linux systems. However, it's a good idea to get used to using control key combinations instead, below is a list of standard ones used in many Unix programs
+
+| Keystroke   | Action    |
+|--------------- | --------------- |
+| CTRL-B | Move the cursor left | 
+| CTRL-F | Move the cursor right |
+| CTRL-P | View the previous command(or move the cursor up) |
+| CTRL-N | View the next command(or move the cursor down) |
+| CTRL-A | Move the cursor to the beginning of the line |
+| CTRL-E | Move the cursor to the end of the line |
+| CTRL-W | Erase the preceding word |
+| CTRL-U | Erase from the cursor to the beginning of the line |
+| CTRL-K | Erase from the cursor to the end of the line |
+| CTRL-Y | Paste erased text(for example, from CTRL-U) |
 
 ## 2.12 Text Editors
+Most parts of the system use plaintext configuration files and because you will be editing these files often you need a powerful tool for the job. You should try to learn one of the two de facto standard Unix text editors, vi and Emacs. Most Unix wizards are religious about their choice of editor but you should just choose whichever one works best for you. 
+
+- If you want an editor that can do almost anything and has extensive online help, and you don't mind doing some extra typing to get these features, try Emacs.
+- If speed is everything, give vi a shot.
+
+You might be tempted to experiment with a friendlier editor when you first start out, such as nano, Pico, or one of many GUI editors out there, but if you tend to make a habit out of the first thing that you use, you don't want to go this route.
 
 ## 2.13 Getting Online Help
+Linux systems come with a wealth of documentation. For basic commands, the manual pages(or *man pages*) will tell you what you need to know and you access them like this:
+```Shell
+$ man ls
+```
+
+To search for a manual page by keyword, use the `-k` option:
+```Shell
+$ man -k keyword
+```
+
+This is helpful when you don't quite know the name of the command that you want. For example if you're looking for a command to sort something you could run:
+```Shell
+$ man -k sort
+--snip--
+comm (1) - compare two sorted files line by line
+qsort (3) - sorts an array
+sort (1) - sort lines of text files
+sortm (1) - sort messages
+tsort (1) - perform topological sort
+--snip--
+```
+
+The output includes the manual page name, the manual section, and a quick description of what the manual page contains. Manual pages are referenced by numbered sections, the table below lists the sections and their numbers:
+
+| Section   | Descripton    |
+|--------------- | --------------- |
+| 1 | User Commands |
+| 2 | Kernel system calls |
+| 3 | Higher-level Unix programming library documentation |
+| 4 | Device interface and driver information |
+| 5 | File descriptions(system configuration files)|
+| 6 | Games |
+| 7 | File formats, conventions, and encodings(ASCII, suffixes, and so on)|
+| 8 | System commands and servers |
+
+The GNU project uses another format called *info*(or *textinfo*). Often this documentation goes further than a typical manual page does, but can be more complex. To access an info manual use the following:
+```Shell
+$ info command
+```
+
+Some packages dump their available documentation into */usr/share/doc* with no regard for manual systems such as `man` or `info`.
 
 ## 2.14 Shell Input and Output
+To send the output of *command* to a file instead of the terminal use the `>` redirection character:
+```Shell
+$ command > file
+```
+
+The shell creates *file* if it does not exist, if it does exist the shell erases(*clobbers*) the original file first. To append the output to the file instead of overwriting it use the `>>` redirection syntax:
+```Shell
+$ command >> file
+```
+
+To send the standard output of a command to the standard input of another command use the pipe character(|) like so:
+```Shell
+$ head /proc/cpuinfo | tr a-z A-Z
+```
+
+You can send the output through as many piped commands as you wish, just add another before each additional command.
 
 ### 2.14.1 Standard Error
+Occasionally, you may redirect standard output but find the program still prints something to the terminal. This is called *standard error*(stderr), it's an additional output stream for diagnostics and debugging. For example: 
+```Shell
+$ ls /aaaaaa > a
+```
+
+After completion, *a* should be empty but you will see the following error message in the terminal:
+```Shell
+ls: cannot access '/aaaaaa': No such file or directory
+```
+
+You can redirect the standard error as well using the `2>` syntax:
+```Shell
+$ ls /aaaaaa > a 2> e
+```
+
+The number 2 specifies the *stream ID* that the shell modifies. Stream ID 1 is the standard output(the default) and 2 is standard error. You can also send the stderr to the same place as stdout with the `>&` notation:
+```Shell
+$ ls /aaaaaa > a 2>&1
+```
 
 ### 2.14.2 Standard Input Redirection
+To channel a file to a program's standard input use the `<` operator:
+```Shell
+$ head < /proc/cpuinfo
+```
+
+You will occasionally run into a program that requires this type of redirection, but most Unix commands accept filenames as arguments, so this isn't very common. The above command could have simply be written as `head /proc/cpuinfo`.
 
 ## 2.15 Understanding Error Messages
+When you encounter a problem on a Unix-like system like Linux, you *must* read the error message. Unlike messages from other operating systems, Unix errors usually tell you exactly what is wrong.
 
 ### 2.15.1 Anatomy of a Unix Error Message
+Most Unix programs generate and report the same basic error messages, here is an example that you'll likely encounter in some form or another:
+```Shell
+$ ls /dsafsda
+ls: cannot access /dsafsda: No such file or directory
+```
+
+There are three components to this message.
+- The program name, `ls`. Some programs may omit this identifying information
+- The filename, */dsafsda*, and there is a problem with this path.
+- The error `No such file or directory` indicates the problem with the filename
+
+This example is obvious, but these messages can get a little confusing when you run a shell script that includes an erroneous command under a different name.
+
+When troubleshooting errors, always address the first error first. Some programs report that they can't do anything before reporting a host of other problems. For example, say you  run a fictitious program called `scumd` and you see this error message:
+```Shell
+scumd: cannot access /etc/scumd/config: No such fire or directory
+```
+
+Following this is a huge list of other error messages, don't let those other errors distract you. All you probably have to do is create */etc/scumd/config*.
+
+> **_NOTE:_** Don't confuse error messages with warning messages. Warnings usually mean something is wrong but the program will try and continue running anyway. To fix a warning message, you may have to find a process and kill it before doing anything else.(We'll cover listing and killing processes in [section 2.16](#216-listing-and-manipulating-processes))
 
 ### 2.15.2 Common Errors
+#### No such file or directory
+This is the number one error. Because the Unix file I/O system doesn't discriminate much between files and directories, this error message covers both cases. This error is also known as ENOENT, short for "Error NO ENTity."
+
+> **_NOTE:_** If you're interested in system calls, this is usually the result of `open()` returning ENOENT. See the open(2) manual page for more information on the errors it can encounter.
+
+#### File exists
+In this case, you probably tried to create a file that already exists. Common when you try to create a directory with the same name as a file.
+
+#### Not a directory, Is a directory
+These messages occur when you try to use a file as a directory, or a directory as a file.
+
+#### No space left on device
+You're out of disk space.
+
+#### Permission denied
+You get this when you attempt to read or write to a file or directory that you have insufficient privileges to access. Also occurs when you try to execute a file that does not have the execution bit set(even if you can read the file). We'll cover permissions in [section 2.17](#217-file-modes-and-permissions).
+
+#### Operation not permitted
+Usually happens when you try to kill a process that you don't own.
+
+#### Segmentation fault, Bus error
+A *segmentation fault* essentially means that the program tried to access a part of memory that it was not allowed to touch and the operating system killed it. Similarly, a *bus error* means that the program tried to access some memory in a way it shouldn't have. This could mean that you gave the program some input that it did not expect. In rare cases, it might be faulty memory hardware.
 
 ## 2.16 Listing and Manipulating Processes
 
