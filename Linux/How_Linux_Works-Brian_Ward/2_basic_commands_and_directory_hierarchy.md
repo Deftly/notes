@@ -442,10 +442,52 @@ Usually happens when you try to kill a process that you don't own.
 A *segmentation fault* essentially means that the program tried to access a part of memory that it was not allowed to touch and the operating system killed it. Similarly, a *bus error* means that the program tried to access some memory in a way it shouldn't have. This could mean that you gave the program some input that it did not expect. In rare cases, it might be faulty memory hardware.
 
 ## 2.16 Listing and Manipulating Processes
+Each process on the system has a numeric *process ID(PID)*. For a quick listing of running processes, just run the `ps` command:
+```Shell
+$ ps
+PID   TTY STAT TIME COMMAND
+520   p0  S    0:00 -bash
+545   ?   S    3:59 /usr/X11R6/bin/ctwm -W
+548   ?   S    0:10 xclock -geometry -0-0
+2159  pd  SW   0:00 /usr/bin/vi lib/addresses
+31956 p3  R    0:00 ps
+```
+
+The fields are as follow:
+- **PID**: The process ID.
+- **TTY**: The terminal device where the process is running. More on this later.
+- **STAT**: The process status, meaning what it is doing and where its memory resides. For example, `S` means sleeping and `R` means running.(See the ps(1) manual page for a description of all the symbols)
+- **TIME**: The amount of CPU time in minutes and seconds that the process has used so far.
+- **COMMAND**: This one might seem obvious as the command used to run the program but a process can change this field from its original value. Also the shell can perform glob expansion, and this field will reflect the expanded command.
+
+> **_NOTE:_** PIDs are unique for each process running on a system. Once a process terminates, the kernel can reuse the PID for a new process.
 
 ### 2.16.1 Command Options
+The `ps` command has many options and they can be specified in three different styles-Unix, BSD, and GNU. Many prefer the BSD style, maybe because it involves less typing. Here are some examples:
+- `ps x` Show all of your running processes
+- `ps ax` Show all processes on the system, not just the ones that you own
+- `ps u` Include more detailed information on processes
+- `ps w` Show full command names not just what fits on one line
 
 ### 2.16.2 Process Termination
+To terminate a process you send it a *signal*, a message to a process from the kernel, with the `kill` command:
+```Shell
+$ kill pid
+```
+
+There are many types of signals. The default is `TERM`, or terminate. You can send different signals by adding an extra option to `kill`. For example, to freeze a process instead of terminating it use `STOP`:
+```Shell
+$ kill -STOP pid
+```
+
+A stopped process is still in memory, read to pick up where it left off. Use the `CONT` signal to continue running the process again:
+```Shell
+$ kill -CONT pid
+```
+
+> **_NOTE:_** Using CTRL-C to terminate a process is the same as using `kill` with the `INT`(interrupt) signal.
+
+The kernel gives most processes a chance to clean up after themselves upon receiving signals. However, some processes may choose a non-terminating action in response to a signal, get wedged in the act of trying to handle it, or simply ignore it, so you might find the process is still running after you try to terminate it. If this happens and you really need to kill the process you can use the `KILL` signal. Unlike other signals, `KILL` cannot be ignored. In fact the operating system doesn't give the process a chance, it simply terminates the process and forcibly removes it from memory. Only use this as a last resort especially if you are unsure what a process is doing.
 
 ### 2.16.3 Job Control
 
