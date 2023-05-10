@@ -490,14 +490,66 @@ $ kill -CONT pid
 The kernel gives most processes a chance to clean up after themselves upon receiving signals. However, some processes may choose a non-terminating action in response to a signal, get wedged in the act of trying to handle it, or simply ignore it, so you might find the process is still running after you try to terminate it. If this happens and you really need to kill the process you can use the `KILL` signal. Unlike other signals, `KILL` cannot be ignored. In fact the operating system doesn't give the process a chance, it simply terminates the process and forcibly removes it from memory. Only use this as a last resort especially if you are unsure what a process is doing.
 
 ### 2.16.3 Job Control
+Shells support *job control*, which is a way to send `TSTP`(similar to `STOP`) and `CONT` signals to programs using various keystrokes and commands. For example, you can send a `TSTP` signal with CTRL-Z and start the process again using `fg`(bring to foreground) or `bg`(move to background;see the next [section](#2164-background-processes)).
+
+> **_NOTE:_** To see if you've accidentally suspended any processes on your current terminal, run the `jobs` command.
 
 ### 2.16.4 Background Processes
+Normally, when you run a Unix command from the shell, you don't get the shell prompt back until the program finishes executing. However, you can detach a process from the shell and put it in the "background" with the ampersand(&).
+```Shell
+$ gunzip file.gz &
+```
+
+The shell should respond by printing the PID of the new background process, and the prompt should return immediately. If the process takes a very long time, it can even continue to run after you log out. If the process finishes before you log out or close the terminal window, the shell usually notifies you depending on your setup.
+
+> **_NOTE:_** If you're remotely accessing a machine and want to keep a program running when you log out you may need to use the `nohup` command.
+
+Some processes may expect to work with standard input and if they are put in the background the may freeze or terminate. Also if a program writes to standard output or standard error, the output can appear in the terminal window with no regard for anything else running there. The best way to make sure this doesn't happen is to redirect its output as described in [section 2.14](#214-shell-input-and-output) .
 
 ## 2.17 File Modes and Permissions
+Every Unix file has a set of *permissions* that determine whether you can read, write, or run the file. Running `ls -l` displays the permissions:
+```Shell
+-rw-r--r-- 1 juser somegroup 7041 Mar 26 19:34 endnotes.html
+```
+
+The file's *mode* represents the file's permissions and some extra information:
+![file_mode](./assets/file_mode.png)
+
+Each permission set(*user*, *group*, and *other*) can contain four basic representations:
+- `r` means that the file is readable
+- `w` means that the file is writable
+- `x` means that the file is executable
+- `-` means the permission for that slot in the set has not been granted
+
+Some executable files have an `s` in the user permissions listing instead of an `x`. This indicates that the executable is *setuid*, meaning that when you execute the program it runs as though the file owner is the user instead of you. Many programs use this setuid bit to run as root in order to get the privileges they need to change system files. One example is the `passwd` program, which needs to chagne the `/etc/passwd` file.
 
 ### 2.17.1 Modifying Permissions
+To change permissions on a file or directory use the `chmod` command. First pick the set of permissions that you want to change and then pick the bit to change. For example, to add group(g) and other(o) read permissions to *file* you could do the following:
+```Shell
+$ chmod g+r file
+$ chmod o+r file
+```
+
+Or you could do it all in one command:
+```Shell
+$ chmod go+r file
+```
+
+To remove these permissions, use `go-r` instead of `go+r`
+
+You can also change permissions with numbers:
+```Shell
+$ chmod 644 file
+```
+
+This is called *absolute* change because it sets *all* permission bits at once. The permissions are represented in octal form(each number represents a number in base 8, 0 through 7, and corresponds to a permission set). See the chmod(1) manual page for more info.
+
+Directories also have permissions. You can list the contents of a directory if it's readable, but you can only access a file in a directory if the directory is executable. 
+
+Finally, you can specify a set of default permissions with the `umask` shell command, which applies a predefined set of permissions to any new file you create. 
 
 ### 2.17.2 Working with Symbolic Links
+A *symbolic link* is a file that points to another file or directory, effectively creating an alias. They offer quick access to obscure directory paths.
 
 ## 2.18 Archiving and Compressing Files
 
