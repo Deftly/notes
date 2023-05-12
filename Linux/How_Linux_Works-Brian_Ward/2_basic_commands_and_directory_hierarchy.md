@@ -549,27 +549,134 @@ Directories also have permissions. You can list the contents of a directory if i
 Finally, you can specify a set of default permissions with the `umask` shell command, which applies a predefined set of permissions to any new file you create. 
 
 ### 2.17.2 Working with Symbolic Links
-A *symbolic link* is a file that points to another file or directory, effectively creating an alias. They offer quick access to obscure directory paths.
+A *symbolic link* is a file that points to another file or directory, effectively creating an alias. They offer quick access to obscure directory paths. This is what a long listing of a symbolic link looks like:
+```Shell
+lrwxrwxrwx 1 ruser users 11 Feb 27 13:52 somedir -> /home/origdir
+```
+
+If you try to access *somedir* the system gives you */hom/origdir* instead. Symbolic links are simply filenames that point to other names. Their names and the paths to which they point don't have to mean anything, in fact in the previous example, *home/origdir* doesn't need to exist. When this is the case accessing *somedir* returns an error reporting that *somedir* doesn't exist.
+
+Another problem is that you can't identify the characteristics of a link target just by looking at the name of the link, you have to follow the link to see if it goes to a file or directory. Your system may also have links that point to other links, which are called *chained symbolic links* and can be a nuisance when you're trying to track them down. To create a symbolic link from *target* to *linkname*, use `ln -s`:
+```Shell
+$ ln -s target linkname
+```
+
+> **_NOTE:_** Don't forget the `-s` option when creating a symbolic link. Without it, `ln` creates a hard link, giving an additional real filename to a single file. Hard links point directly to the file data instead of to another filename as a symbolic link does.
+
+While there are a number of pitfalls with symbolic links they outweighed by the power they provide in organizing files and ability to easily patch up small problems. A common use case is when a program expects to find a particular file or directory that already exists somewhere else on your system. Instead of making a copy or having to change the program(often may not be possible), you can just create a symbolic link from it to the actual file or directory.
 
 ## 2.18 Archiving and Compressing Files
+`gzip` and `tar` are two common utilities for compressing and bundling files and directories.
 
 ### 2.18.1 gzip
+The program `gzip`(GNU Zip) is one of the current standard Unix compression programs. A file that ends in *.gz* is a GNU Zip archive. Use `gunzip file.gz` to uncompress *file.gz* and remove the suffix. To compress the file again use `gzip file`.
 
 ### 2.18.2 tar
+Unlike ZIP programs for other operating systems, `gzip` does not create archives of files(it doesn't pack multiple files and directories into a single file). To create an archive use `tar`:
+```Shell
+# tar cvf archive.tar file1 file2 ...
+```
+
+Archives created by `tar` usually have a *.tar* suffix(this is by convention and isn't required). The `c` flag activates *create mode*, `v` is used to enable verbose output so you can see the list of files as they are being added to the archive, and the `f` option is used to specify the name of the output file.
+
+#### Unpacking .tar Files
+To unpack a *.tar* file with `tar` use the `x` flag:
+```Shell
+$ tar xvf archive.tar
+```
+
+The `x` flag puts `tar` into *extract(unpack) mode*. You can extract individual parts of the archive by entering the exact names of the parts you want to extract at the end of the command line. 
+
+> **_NOTE:_** When using extract mode, remember that `tar` does not remove the *archived.tar* file after extracting its contents.
+
+#### Using Table-of-Contents Mode
+Before unpacking it's usually a good idea to check the contents of a *.tar* file with the &table-of-contents mode* by using the `t` flag instead of the `x` flag. This mode verifies the archive's basic integrity and prints the names of all files inside.
+
+When unpacking, consider using the `p` option to preserve permissions. This will override your `umask` and get the exact permissions specified in the archive. The `p` option is the default when you're working as the superuser.
+
+> **_NOTE:_** Make sure you're waiting until the command terminates and you get your shell prompt back. Even if you only want to extract a small part of an archive, `tar` must run through the who thing without interruption because it sets the permissions only *after* checking the entire archive. 
 
 ### 2.18.3 Compressed Archives (.tar.gz)
+Often you will find that archives are compressed with filenames ending in *.tar.gz*. To unpack a compressed archive you need to do the following:
+```Shell
+$ gunzip file.tar.gz
+$ tar xvf file.tar
+```
+
+To create a compressed archive simple do the reverse: first run `tar` then `gzip`. While this is okay when you first start out there is a better way to go about doing this.
 
 ### 2.18.4 zcat
+A better way to do the tasks in the previous section is to combine archival and compression functions with a pipeline. The following unpacks *file.tar.gz*
+```Shell
+$ zcat file.tar.gz | tar xvf - 
+```
+
+The `zcat` command is the same as `gunzip -dc`. The `-d` option decompresses and `-c` sends the results to standard output(in this case to the `tar` command).
+
+Because it's so common to use `zact`, the version of `tar` that comes with Linux has a shortcut. You can use `z` as an option to automatically invoke `gzip` on the archive. This works both for extracting an archive(with the `x` or `t` modes in tar) and creating one(with `c`). The following can be used to verify a compressed archive:
+```Shell
+$ tar -ztvf file.tar.gz
+```
+
+> **_NOTE:_** A .tgz file is the same as a .tar.gz file. The suffix is meant to fit into FAT(MS-DOS-based) filesystems. 
 
 ### 2.18.5 Other Compression Utilities
+Two more compression programs are `xz` and `bzip2`, whose compressed files end with *.xz* and *.bz2* respectively. They are marginally slower than `gzip` but often compact text files a little more. The decompressing programs to use are `unxz` and `bunzip2`, and the options are very similar to `gzip`.
 
 ## 2.19 Linux Directory Hierarchy Essentials
+The details of the Linux directory structure are outline in the Filesystems Hierarchy Standard, or [FHS](https://refspecs.linuxfoundation.org/fhs.shtml). The diagram below is a simplied overview of the hierarchy, showing some of the directories under */*, */usr*, and */var*. Notice that some of the directory structure under */ur* contains some of the same directory names as */*.
+
+![linux_directory_hierarchy](./assets/linux_directory_hierarchy.png)
+
+Here are some of the most important subdirectories under root:
+- ***/bin*** Contains ready-to-run programs(executables) including most of the basic Unix commands such as `ls` and `cp`. Most of the programs in */bin* are in binary format, having been created by a C compiler, but some are shell scripts.
+
+- ***/dev*** Contains device files, more about these in [section 3](./3_devices.md)
+
+- ***/etc*** This core system directory contains the user password, boot, device, networking, and other setup files.
+
+- ***/home*** Holds home(personal) directories for regular users. 
+
+- ***/lib*** An abbreviation for library, this directory holds library files containing code that executables can use. There are two types of libraries, static and shared. The */lib* directory should contain only shared libraries, but other lib directories, such as */usr/lib*, contain both varieties as well as other files.(We'll cover shared libraries in more detail in [section 15](./15_development_tools.md))
+
+- ***/proc*** Provides information about the running system, hardware, processes, and kernel configuration.
+
+- ***/run*** Provides a location for applications and system services to store runtime data during the system's uptime. It is meant to hold data that is volatile and needs to be available across reboots or system restarts. 
+
+- ***/sys*** Provides an interface to access and manipulate kernel and device information. It exposes various aspects of the system's hardware configuration and allows for dynamic interaction with system devices.  
+
+- ***/sbin*** A place for system executables. Program in */sbin* relate to system management, so regular users usually do not have */sbin* components in their command paths. Many of the utilities found here do not work if not run as root. 
+
+- ***/tmp*** A storage area for smaller, temporary files. Any user may read to and write from */tmp* but the user may not have permission to access another user's files there. Most distributions clear */tmp* when the machine boots and some even remove old files periodically.
+
+- ***/usr*** It contains a large directory hierarchy, including the bulk of the Linux system. Many of the directory names in */usr* are the same as those in the root directory(like */usr/bin* and */usr/lib*), and they hold the same types of files. Overall it serves as a location for installed software, libraries, documentation, and user-specific resources on Linux systems.
+
+- ***/var*** The variable subdirectory, where programs record information that can change over the course of time. System logging, user tracking, caches, and other files that system programs create and manage are here. 
 
 ### 2.19.1 Other Root Subdirectories
+- ***/boot*** Contains kernel boot loader files. These files pertain only to the very first stage of the Linux startup procedure so there isn't information on how Linux starts up its services in this directory.(See [section 5](/Linux/How_Linux_Works-Brian_Ward/5_how_the_linux_kernel_boots.md) for information about that)
+
+- ***/media*** A base attachment point for removable media such as flash drives.
+
+- ***/opt*** This may contain additional third-party software. Many systems don't use */opt*.
 
 ### 2.19.2 The /usr Directory
+*/usr*  is where most of the user-space programs and data reside. 
+
+- ***/usr/bin*** Holds executables for user-level applications and commands that are not essential for basic system functionality. These binaries are typically accessible to all users.
+
+- ***/usr/lib*** Contians libraries and additional data files for user applications and software packages. These libaries are not critical for the basic operation of the system, but are essential for various applications and services installed on the system. 
+
+- ***/usr/include*** Stores header files that are needed for software development. Header files define the interfaces and structures used by programming languages and libraries.
+
+- ***/usr/local*** Serves as a location for locally installed software and files that are specific to the local system. It provides a separate directory hierarchy from the system-provided files in */usr*, allowing users and system administrators to install and manage software that is not part of the core distribution. 
+
+- ***/usr/share*** Contains files that should work on other kinds of Unix machines with no loss of functionality. These are usually shared by various applications and packages and includes things like icons, images, documentation, and default configurations for software. 
 
 ### 2.19.3 Kernel Location
+On Linux systems, the kernel is normally a binary file */vmlinuz* or */boot/vmlinuz*. A *boot loader* loads this file into memory and sets it in motion when the system boots. 
+
+Once the boot loader starts the kernel, the main kernel file is no longer used by the running system. However, you'll find many modules that the kernel loads and unloads on demand during the course of normal system operation. Called *loadable kernel modules*, they are located under */lib/modules*.
 
 ## 2.20 Running Commands as the Superuser
 
