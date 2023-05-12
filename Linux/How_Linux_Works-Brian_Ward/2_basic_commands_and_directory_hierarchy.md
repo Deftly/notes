@@ -679,12 +679,38 @@ On Linux systems, the kernel is normally a binary file */vmlinuz* or */boot/vmli
 Once the boot loader starts the kernel, the main kernel file is no longer used by the running system. However, you'll find many modules that the kernel loads and unloads on demand during the course of normal system operation. Called *loadable kernel modules*, they are located under */lib/modules*.
 
 ## 2.20 Running Commands as the Superuser
+To run commands as the superuser you might be tempted to start a root shell, but doing so has many disadvantages:
+- You have no record of system-altering commands.
+- You have no record of the users who permored system-altering commands.
+- You don't have access to your normal shell environment.
+- You ahve to enter the root passowrd(if you have one).
 
 ### 2.20.1 sudo
+Most distributions use a package called `sudo` to allow administrators to run commands as root while logged in as themselves. For example, you could do something like this:
+```Shell
+$ sudo vipw
+```
+
+When you run this command, `sudo` logs this action with the syslog service. We'll cover more about system logs in [seciton 7](/Linux/How_Linux_Works-Brian_Ward/7_system_configuration-logging_system-time_batch-jobs_and_users.md).
 
 ### 2.20.2 /etc/sudoers
+To be able to run commands as the super user you must configure the privileged users in the */etc/sudoers* file. For example, to give *user1* and *user2* the pwoer to run any command as root without having to enter a password:
+```
+User_Alias ADMINS = user1, user2
+
+ADMINS ALL = NOPASSWD: ALL
+
+root ALL=(ALL) ALL
+```
 
 ### 2.20.3 sudo Logs
+You can find the `sudo` logs on most systems with this command:
+```Shell
+$ journalctl SYSLOG_IDENTIFIER=sudo
+```
+
+On older systems, you'll need to look for a logfile in */var/log*, such as */var/log/auth.log*.
 
 ## 2.21 Looking Forward
+In the next few sections we'll be working with both kernel and user-space system components using the command line tools covered in this chapter.
 
