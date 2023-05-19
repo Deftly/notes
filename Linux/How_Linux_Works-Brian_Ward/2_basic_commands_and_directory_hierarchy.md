@@ -219,7 +219,7 @@ If no files match a glob, the `bash` shell performs no expansion, and the comman
 
 Another shell glob character, the question mark(?), instructs the shell to match exactly one arbitrary character. For example, *b?at* matches *boat* and *brat*.
 
-If you don't want the shell to expand a glob in a command enclose the glob in single quotes(''). For example, the command `echo '*'` prints a star.
+If you don't want the shell to expand a glob in a command enclose the glob in single quotes('). For example, the command `echo '*'` prints a star.
 
 There is more to the shell's patter-matching capabilities, but *\** and *?* are the basics you need to know.
 
@@ -788,5 +788,5 @@ $ journalctl SYSLOG_IDENTIFIER=sudo
 On older systems, you'll need to look for a logfile in */var/log*, such as */var/log/auth.log*.
 
 ## 2.21 Looking Forward
-In the next few sections we'll be working with both kernel and user-space system components using the command line tools covered in this chapter.
+In the next few sections we'll be working with both kernel and user-space system components using the command line tools covered in this chapter. [Next section](./3_devices.md).
 
