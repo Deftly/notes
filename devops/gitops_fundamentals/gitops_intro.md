@@ -1,5 +1,17 @@
 # GitOps Intro
 
+<!--toc:start-->
+- [GitOps Intro](#gitops-intro)
+  - [What is GitOps](#what-is-gitops)
+  - [GitOps Use Cases](#gitops-use-cases)
+    - [Continuous deployment of applications](#continuous-deployment-of-applications)
+    - [Continuous deployment of cluster resources](#continuous-deployment-of-cluster-resources)
+    - [Continuous deployment of infrastructure](#continuous-deployment-of-infrastructure)
+    - [Detecting/Avoiding configuration drift](#detectingavoiding-configuration-drift)
+    - [Multi-cluster deployments](#multi-cluster-deployments)
+  - [GitOps Pros and Cons](#gitops-pros-and-cons)
+<!--toc:end-->
+
 ## What is GitOps
 GitOps is a set of best practices where the entire code delivery process is controlled via Git, including infrastructure and application definitions as code and automation to complete updates and rollbacks.
 
