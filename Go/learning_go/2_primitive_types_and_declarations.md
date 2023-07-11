@@ -270,3 +270,46 @@ At first glance, it seems to work exactly like other languages, but `const` in G
 Go doesn't provide a way to specify that a value calculated at runtime is immutable, meaning there are no immutable arrays, slices, maps, structs, or struct fields. This isn't as limiting as it sounds. Within a function it is clear if a variable is being modified and in later sections we'll see how Go prevents modifications to variables that are passed as parameters to functions.
 
 > Constants in Go are a way to give names to literals. There is ***no*** way in Go to declare that a variable is immutable.
+
+## Typed and Untyped Constants
+An untyped constant works exactly like a literal. It has no type of its own, but does have a default type that is issued when no other type can be inferred. A typed constant can only be directly assigned to a variable of that type. 
+
+In general, leaving a constant untyped gives you more flexibility, though there are some situations where you want a constant to enforce a type. Here is what an untyped constant declaration looks like and some legal assignments:
+
+```go 
+const x = 10 
+var y int = x 
+var z float64 = x 
+var d byte = x
+```
+
+Here's what a typed constant declaration looks like:
+
+```go 
+const typedX int = 10
+```
+
+This constant can only be assigned directly to an `int`. Assignment to any other type produces a compile-time error:
+
+```shell
+cannot use typedX (type int) as type float64 in assignment
+```
+
+## Unused Variables
+In Go *every declared local variable must be read*. It is a compile time error to declare a local variable and to not read its value.
+
+> The Go compiler won't stop you from creating unread package-level variables. Another reason why you should avoid creating package-level variables. Surprisingly, the Go compiler allows you to create unread constants with `const`. This is because constants in Go are calculated at compile time and cannot have any side effects. This makes them easy to eliminate: if a constant isn't used it isn't included in the compiled binary. 
+
+## Naming Variables and Constants
+Like most languages, Go requires identifier names to start with a letter or underscore and the name can contain numbers, underscores, and letters.
+
+Even though underscore is a valid character in a variable name, it is rarely used, because idiomatic Go uses camel case instead of snake case. 
+
+> An underscore by itself(`_`) is a special identifier in Go, we'll talk more about it in [section 5](./5_functions.md).
+
+In many languages, constants are always written in all uppercase letters, with words separated by underscores. Go doesn't follow this pattern because the case of the first letter in the name of a package-level declaration is used to determine if the item is accessible outside the package. We will revisit this in [section 9](./9_modules_packages_imports.md).
+
+Within a function favor, short variable names. The smaller the scope for a variable the shorter the name that's used for it. When naming variables and constants in the package block, use more descriptive names to make it clear what the value represents.
+
+## Wrapping Up
+This section covered the built-in types, declaring variables, assignments, and operators. The next [section](./3_composite_types.md) will go into the composite types in Go: arrays, slices, maps, and structs. We will also take another look at strings and runes as well as encodings.
