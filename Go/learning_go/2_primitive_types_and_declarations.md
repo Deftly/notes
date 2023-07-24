@@ -1,4 +1,28 @@
 # Primitive Types and Declarations
+
+<!--toc:start-->
+- [Primitive Types and Declarations](#primitive-types-and-declarations)
+  - [Built-in Types](#built-in-types)
+    - [The Zero Value](#the-zero-value)
+    - [Literals](#literals)
+    - [Booleans](#booleans)
+    - [Numeric Types](#numeric-types)
+      - [Integer types](#integer-types)
+      - [The special integer types](#the-special-integer-types)
+      - [Choosing which integer to use](#choosing-which-integer-to-use)
+      - [Integer operators](#integer-operators)
+      - [Floating point types](#floating-point-types)
+      - [Complex types(you're probably not going to use these)](#complex-typesyoure-probably-not-going-to-use-these)
+    - [A Taste of Strings and Runes](#a-taste-of-strings-and-runes)
+    - [Explicit Type Conversion](#explicit-type-conversion)
+  - [var Versus :=](#var-versus)
+  - [Using `const`](#using-const)
+  - [Typed and Untyped Constants](#typed-and-untyped-constants)
+  - [Unused Variables](#unused-variables)
+  - [Naming Variables and Constants](#naming-variables-and-constants)
+  - [Wrapping Up](#wrapping-up)
+<!--toc:end-->
+
 In this section we'll begin looking at some of Go's language features and how to best use them. When trying to figure out what "best" means the overriding principle is to make our intentions clear. 
 
 This section will cover primitive types and variables. While every programmer will have experience with these concepts Go does some things differently and there are subtle difference between Go and other languages.

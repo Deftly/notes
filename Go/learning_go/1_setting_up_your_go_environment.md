@@ -1,5 +1,18 @@
 # Setting Up Your Go Environment
 
+<!--toc:start-->
+- [Setting Up Your Go Environment](#setting-up-your-go-environment)
+  - [Installing the Go Tools](#installing-the-go-tools)
+  - [The Go Workspace](#the-go-workspace)
+  - [The `go` Command](#the-go-command)
+    - [`go run`](#go-run)
+    - [`go build`](#go-build)
+  - [Getting Third-Party Go Tools](#getting-third-party-go-tools)
+  - [Makefiles](#makefiles)
+  - [Staying Up to Date](#staying-up-to-date)
+  - [Wrapping Up](#wrapping-up)
+<!--toc:end-->
+
 ## Installing the Go Tools
 To write Go code you need to download and install the Go development tools which can be found on the [Go website](https://go.dev/dl/). The *.pkg* installer for Mac and *.msi* installer for Windows automatically installs Go in the correct location, remove any old installations, and put the Go binary in the default executable path. The Linux installers are gzipped tar files and expand to a directory named *go*. Copy this directory to */usr/local* and add */usr/local/go/bin* to your *$PATH* so that the `go` command is accessible:
 
