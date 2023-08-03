@@ -167,7 +167,7 @@ Go also has a type that represents a single code point. The *rune* type is an al
 The [next section](./3_composite_types.md) will go through strings in more detail. It will cover some implementation details, relationships with bytes and runes, as well as advanced features and pitfalls.
 
 ### Explicit Type Conversion
-Go doesn't allow automatic type promotion between variables, you must use a *type conversion* when variable types don't match. Even different sized integers and floats must be converted to the same type to interact, this make it clear exactly what type you want without having to memorize any type conversion rules.
+Go doesn't allow automatic type promotion between variables, you must use a *type conversion* when variable types don't match. Even different sized integers and floats must be converted to the same type to interact, this makes it clear exactly what type you want without having to memorize any type conversion rules.
 
 ```go
 var x int = 10
@@ -176,7 +176,7 @@ var z float64 = float64(x) + y
 var d int = x + int(y) 
 ```
 
-> Type conversion are one of the place where Go choose to add verbosity in exchange for simplicity and clarity. Idiomatic GO values comprehensibility over conciseness.
+> Type conversions are one of the places where Go choose to add verbosity in exchange for simplicity and clarity. Idiomatic Go values comprehensibility over conciseness.
 
 ## var Versus := 
 The most verbose way to declare a variable in Go uses the `var` keyword, an explicit type, and an assignment:
@@ -238,7 +238,7 @@ x := 10
 x, y := 30, "hello"
 ```
 
-The limitation of `:=` is that it is not legal outside of a function. SO for package level variables you must use `var`.
+The limitation of `:=` is that it is not legal outside of a function. So for package level variables you must use `var`.
 
 When choosing which style to use always choose what makes your intent clearest. The most common declaration style within a function is `:=`, though there are a few situations within functions where you should avoid `:=`.
 - When initializing a variable to its zero value, use `var x int`. This makes it clear that the zero value is intended. 
@@ -282,7 +282,7 @@ cannot assign to x
 cannot assign to y
 ```
 
-At first glance, it seems to work exactly like other languages, but `const` in Go is very limited. Constant in Go are a way to give names to literals. They can only hold values that the compiler can figure out at compile time, meaning they can be assigned to the following:
+At first glance, it seems to work exactly like other languages, but `const` in Go is very limited. Constants in Go are a way to give names to literals. They can only hold values that the compiler can figure out at compile time, meaning they can be assigned to the following:
 - Numeric literals
 - `true` and `false`
 - Strings
