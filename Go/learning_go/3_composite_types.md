@@ -118,7 +118,7 @@ So far everything seem identical to arrays, but we start to see the differences 
 var x []int
 ```
 
-This creates a slice of `int`s. Since no value is assigned, `x` is assigned the zero value for a slice which is `nil`. In Go, `nil` is an identifier that represents the lack of a value for some types. Like untyped numeric constants, `nil` has not type so it can be assigned or compared against values of different types. A `nil` slice contains nothing.
+This creates a slice of `int`s. Since no value is assigned, `x` is assigned the zero value for a slice which is `nil`. In Go, `nil` is an identifier that represents the lack of a value for some types. Like untyped numeric constants, `nil` has no type so it can be assigned or compared against values of different types. A `nil` slice contains nothing.
 
 A slice is the first type we've seen that isn't *comparable*. It is a compile-time error to use `==` or `!=` to compare slices. The only thing you can compare a slice with is `nil`:
 
@@ -240,11 +240,11 @@ If you have some starting values, or if a slice's values aren't going to change,
 data := []int{2, 4, 6, 8}
 ```
 
-If you have a good idea of h ow large your slice needs to be, but don't know what those values will be you should use `make`. The question then is, should you specify a nonzero length in the call to `make` or specify a zero length and a nonzero capacity.
+If you have a good idea of how large your slice needs to be, but don't know what those values will be you should use `make`. The question then is, should you specify a nonzero length in the call to `make` or specify a zero length and a nonzero capacity.
 
 - If you are using a slice as a buffer then specify a nonzero length
 - If you are *sure* you know the exact size you want, specify the length and index into the slice to set the values. This is often done when transforming values in one slice and storing them in a second. The downside to this approach is that if you have the size wrong, you'll either end up with zero values at the end of the slice or a panic from trying to access elements that don't exist.
-- In other situations use `make` with a zero length and capacity specified. With this approach you use `append` to add items to the slice. If the number of items turns out to be smaller you won't have extra zero values at the end and you code won't panic if there are more values than you were expecting.
+- In other situations use `make` with a zero length and capacity specified. With this approach you use `append` to add items to the slice. If the number of items turns out to be smaller you won't have extra zero values at the end and your code won't panic if there are more values than you were expecting.
 
 ### Slicing Slices
 A *slice expression* creates a slice from a slice. It's written inside brackets and consists of a starting offset and an ending offset, separated by a colon(:). If you leave off the staring offset, 0 is assumed. Likewise, leaving off the ending offset, the end of the slice is assumed.
