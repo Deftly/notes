@@ -1,4 +1,27 @@
 # Blocks, Shadows, and Control Structures
+
+<!--toc:start-->
+- [Blocks, Shadows, and Control Structures](#blocks-shadows-and-control-structures)
+  - [Blocks](#blocks)
+    - [Shadowing Variables](#shadowing-variables)
+    - [The Universe Block](#the-universe-block)
+  - [`if`](#if)
+  - [`for`, Four Ways](#for-four-ways)
+    - [The Complete `for` Statement](#the-complete-for-statement)
+    - [The Condition-Only `for` Statement](#the-condition-only-for-statement)
+    - [The Infinite `for` Statement](#the-infinite-for-statement)
+    - [`break` and `continue`](#break-and-continue)
+    - [The `for-range` Statement](#the-for-range-statement)
+      - [Iterating over maps](#iterating-over-maps)
+    - [Labeling Your `for` Statements](#labeling-your-for-statements)
+    - [Choosing the Right `for` Statement](#choosing-the-right-for-statement)
+  - [`switch`](#switch)
+  - [Blank Switches](#blank-switches)
+  - [Choosing Between `if` and `switch`](#choosing-between-if-and-switch)
+  - [`goto`-Yes, `goto`](#goto-yes-goto)
+  - [Wrapping Up](#wrapping-up)
+<!--toc:end-->
+
 In This section we'll start by explaining blocks and how they control when an identifier is available. Then we'll look at Go's control structures: `if`, `for`, and `switch`. Finally, we will talk about `goto` and the one situation when you should use it.
 
 ## Blocks
