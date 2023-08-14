@@ -499,4 +499,4 @@ done:
 In this simple case we have some logic that we don't want to run in the middle of the function, but we do want to run the end of the function. There are ways to do this without `goto`. We could set up a boolean flag or duplicate the complicated code after the `for` loop instead of using `goto`, but this also has drawbacks. Littering your code with boolean flags to control the logic flow is arguably the same functionality as `goto` just more verbose. And duplicating complicated code is problematic because it makes your code harder to maintain. 
 
 ## Wrapping Up
-This section covered a lot of important topics for writing idiomatic Go. We covered blocks, shadowing, and control structures, and how to use them correctly. In the next section we'll move on to larger programs, using functions to organize our code.
+This section covered a lot of important topics for writing idiomatic Go. We covered blocks, shadowing, and control structures, and how to use them correctly. In the [next section](./5_functions.md) we'll move on to larger programs, using functions to organize our code.
