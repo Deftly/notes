@@ -477,7 +477,110 @@ func DoSomeInserts(ctx context.Context, db *sql.DB, value1, value2 string) (err,
 
 In this example function, we create a transaction to do a series of database inserts. If any of them fail, we want to roll back. If all of them succeed, we want to commit. We can use a closure with `defer` to check if `err` has been assigned a value. If it hasn't, we run a `tx.Commit()`, which could also return an error. If it does, the value of `err` is modified. If any database interaction returned an error, we call `tx.Rollback()`.
 
-## Go Is Call By Value
+> New Go developers tend to forget the parentheses when specifying a closure for `defer`. It is a compile-time error to leave them out, just remember that the parentheses allow you to specify values that will be passed into the closure when it runs.
 
+A common pattern in Go is for a function that allocates a resource to also return a closure that cleans up the resource. Let's make a few changes to the simplified cat utility we wrote earlier, first we'll write a helper function that opens a file and returns a closure:
+
+```go 
+func getFile(name string) (*os.File, func(), error) {
+    file, err := os.Open(name)
+    if err != nil {
+        return nil, nil, err
+    }
+    return file, func() {
+        file.Close()
+    }, nil
+}
+```
+
+Now in `main`, we'll use our `getFile` function:
+
+```go 
+f, closer, err := getFile(os.Args[1])
+if err != nil {
+    log.Fatal(err)
+}
+defer closer()
+```
+
+Because Go doesn't allow unused variables, returning `closer` from the function means that the program will not compile if the function is not called. That reminds the user to use `defer`.
+
+## Go Is Call By Value
+We say Go is *call by value* because when you supply a variable for a parameter to a function, Go *always* makes a copy of the value of the variable. Let's look at an example, first we'll define a simple struct:
+
+```go 
+type person struct {
+	age  int
+	name string
+}
+```
+
+Next, we write a function that takes in an `int`, a `string`, and a `person`, and modifies their values:
+
+```go 
+func modifyFails(i int, s string, p person) {
+	i = i * 2
+	s = "Goodbye"
+	p.name = "Bob"
+}
+```
+
+Now we'll call this function from `main` and see if it works:
+
+```go 
+func main() {
+	p := person{}
+	i := 2
+	s := "Hello"
+	modifyFails(i, s, p)
+	fmt.Println(i, s, p) // 2 Hello {0 }
+}
+```
+
+As the name of the function suggests, running this code shows that a function won't change the values of the parameters passed into it
+
+The behavior is a little different for maps and slices. Let's see what happens when we try to modify them within a function:
+
+```go 
+func modMap(m map[int]string) {
+	m[2] = "hello"
+	m[3] = "goodbye"
+	delete(m, 1)
+}
+
+func modSlice(s []int) {
+	for k, v := range s {
+		s[k] = v * 2
+	}
+	s = append(s, 10)
+}
+```
+
+We then call these functions from `main`:
+
+```go 
+func main() {
+	m := map[int]string{
+		1: "first",
+		2: "second",
+	}
+
+	modMap(m)
+	fmt.Println(m) // map[2:hello 3:goodbye]
+
+	s := []int{1, 2, 3}
+	modSlice(s)
+	fmt.Println(s) // [2 4 6]
+}
+```
+
+For the map we see any changes made to the map parameter are reflected in the variable passed into the function. For slices, you can modify any element in the slice, but you can't lengthen the slice. This true for maps and slices that are passed directly into functions as well as map and slice fields in structs. This is because maps and slices are implemented using pointers, which we'll go into more detail about in the [next section](./6_pointers.md).
+
+> Every type in Go is value type. It's just that sometimes the value is a pointer.
+
+Call by value is one reason why Go's limited support for constants is only a minor handicap. Since variables are passed by value, you can be sure that calling a function doesn't modify the variable whose value was passed in(unless the variable is a slice or map). This is generally a good thing as it's easier to understand the flow of data through your program when functions don't modify their input parameters and instead return newly computed values.
+
+While this approach is easy to understand, there are cases where you need to pass something mutable to a function. In these cases you need a pointer.
 
 ## Wrapping Up
+In this section we covered functions in Go, how they are similar to functions in other languages, and their unique traits. In the [next section](./6_pointers.md) we'll cover pointers and learn how to use them to write efficient programs.
