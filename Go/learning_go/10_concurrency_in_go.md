@@ -24,7 +24,7 @@
     - [Running Code Exactly Once](#running-code-exactly-once)
     - [Putting Our Concurrent Tools Together](#putting-our-concurrent-tools-together)
   - [When to Use Mutexes Instead of Channels](#when-to-use-mutexes-instead-of-channels)
-  - [Atomics - You Probably Don't Need These](#atomics-you-probably-dont-need-these)
+  - [Atomics, You Probably Don't Need These](#atomics-you-probably-dont-need-these)
   - [Where to Learn More About Concurrency](#where-to-learn-more-about-concurrency)
   - [Wrapping Up](#wrapping-up)
 <!--toc:end-->
@@ -73,7 +73,7 @@
 
 ## When to Use Mutexes Instead of Channels 
 
-## Atomics - You Probably Don't Need These 
+## Atomics, You Probably Don't Need These 
 
 ## Where to Learn More About Concurrency
 

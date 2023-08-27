@@ -10,7 +10,7 @@
     - [Functions Versus Methods](#functions-versus-methods)
     - [Type Declarations Aren't Inheritance](#type-declarations-arent-inheritance)
     - [Types Are Executable Documentation](#types-are-executable-documentation)
-    - [`iota` Is for Enumerations - Sometimes](#iota-is-for-enumerations-sometimes)
+    - [`iota` Is for Enumerations... Sometimes](#iota-is-for-enumerations-sometimes)
   - [Use Embedding for Composition](#use-embedding-for-composition)
   - [Embedding Is Not Inheritance](#embedding-is-not-inheritance)
   - [A Quick Lesson on Interfaces](#a-quick-lesson-on-interfaces)
@@ -44,7 +44,7 @@
 
 ### Types Are Executable Documentation
 
-### `iota` Is for Enumerations - Sometimes
+### `iota` Is for Enumerations... Sometimes
 
 ## Use Embedding for Composition
 
