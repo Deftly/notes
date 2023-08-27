@@ -1,29 +1,31 @@
 # Table of Contents
 
-### [Primitive Types and Declarations](2_primitive_types_and_declarations.md)
+### [Setting Up Your Go Environment](./1_setting_up_your_go_environment.md)
 
-### [Composite Types](3_composite_types.md)
+### [Primitive Types and Declarations](./2_primitive_types_and_declarations.md)
 
-### [Blocks, Shadows, and Control Structures](4_blocks_shadows_control_structures.md)
+### [Composite Types](./3_composite_types.md)
 
-### [Functions](5_functions.md)
+### [Blocks, Shadows, and Control Structures](./4_blocks_shadows_control_structures.md)
 
-### [Pointers](6_pointers.md)
+### [Functions](./5_functions.md)
 
-### [Types, Methods, and Interfaces](7_types_methods_interfaces.md)
+### [Pointers](./6_pointers.md)
 
-### [Errors](8_errors.md)
+### [Types, Methods, and Interfaces](./7_types_methods_interfaces.md)
 
-### [Modules, Packages, and Imports](9_modules_packages_imports.md)
+### [Errors](./8_errors.md)
 
-### [Concurrency in Go](10_concurrency_in_go.md)
+### [Modules, Packages, and Imports](./9_modules_packages_imports.md)
 
-### [The Standard Library](11_standard_library.md)
+### [Concurrency in Go](./10_concurrency_in_go.md)
 
-### [The Context](12_context.md)
+### [The Standard Library](./11_standard_library.md)
 
-### [Writing Tests](13_writing_tests.md)
+### [The Context](./12_context.md)
 
-### [Here There Be Dragons: Reflect, Unsafe, and Cgo](14_reflect_unsafe_cgo.md)
+### [Writing Tests](./13_writing_tests.md)
 
-### [Generics in Go](15_generics_in_go.md)
+### [Here There Be Dragons: Reflect, Unsafe, and Cgo](./14_here_there_be_dragons:reflect_unsafe_and_cgo.md)
+
+### [Generics in Go](./15_generics_in_go.md)
