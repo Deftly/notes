@@ -623,9 +623,12 @@ defer contents.Close()
 json.Unmarshal(contents, &data) // the contents are now in the data map
 ```
 
-If you see a function that takes in an empty interface, it's likely that it is using reflection([section 14](./14_here_there_be_dragons:reflect_unsafe_and_cgo.md)) to either populate or read the value. 
+If you see a function that takes in an empty interface, it's likely that it is using reflection([section 14](./14_here_there_be_dragons:reflect_unsafe_and_cgo.md)) to either populate or read the value. These situations should be relatively rare. Avoid using `interface{}`. Go is designed as a strongly typed language and attempts to work around this are unidiomatic.
+
+If you find yourself having to store a value in an empty interface, you might be wondering how to read the value back again. To do this, we need to look at type assertions and type switches.
 
 ## Type Assertions and Type Switches
+
 
 ## Use Type Assertions and Type Switches Sparingly
 
