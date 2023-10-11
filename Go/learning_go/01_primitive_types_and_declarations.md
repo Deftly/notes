@@ -219,4 +219,4 @@ Go requires identifier names to start with a letter or underscore, and the name 
 In many languages, constants are always written in all uppercase letters, with words separated by underscores(names like `INDEX_COUNTER`). Go doesn't follow this pattern because Go uses the first letter in the name of a package-level variable to determine if the item is accessible outside the package.
 
 ## Wrapping Up
-This section covered how to use built-in types, declare variables and work with assignments and operators. The next section will go over composite types in Go: arrays, slices, maps, and structs. We'll also take another look at strings and runes and learn about encodings.
+This section covered how to use built-in types, declare variables and work with assignments and operators. The [next section](./02_composite_types.md) will go over composite types in Go: arrays, slices, maps, and structs. We'll also take another look at strings and runes and learn about encodings.
