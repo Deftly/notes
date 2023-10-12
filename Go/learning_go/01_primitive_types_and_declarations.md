@@ -14,7 +14,7 @@
       - [Complex types(you're probably not going to use these)](#complex-typesyoure-probably-not-going-to-use-these)
     - [A Taste of Strings and Runes](#a-taste-of-strings-and-runes)
     - [Explicit Type Conversion](#explicit-type-conversion)
-  - [Using `var` Versus `:=`](#using-var-versus)
+  - [Choosing a Declaration Style](#choosing-a-declaration-style)
   - [Using `const`](#using-const)
   - [Typed and Untyped Constants](#typed-and-untyped-constants)
   - [Unused Variables](#unused-variables)
@@ -122,7 +122,7 @@ var d int = x + int(y)
 ```
 Since all type conversions in Go are explicit, you cannot treat another Go type as a boolean. Many languages allow a nonzero number or nonempty string to be interpreted as a boolean `true`. In Go *no other type can be converted to a `bool`, implicitly or explicitly*. To convert from another data type to a boolean, you must use one of the comparison operators.
 
-## Using `var` Versus `:=`
+## Choosing a Declaration Style
 The most verbose way to declare a variable in Go uses the `var` keyword, and explicit type, and an assignment:
 ```go
 var x int = 10
