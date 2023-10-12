@@ -1,5 +1,31 @@
 # Composite Types
 
+<!--toc:start-->
+- [Composite Types](#composite-types)
+  - [Arrays - Too Rigid to Use Directly](#arrays-too-rigid-to-use-directly)
+  - [Slices](#slices)
+    - [Built-in `len`](#built-in-len)
+    - [Built-in `append`](#built-in-append)
+    - [Capacity](#capacity)
+      - [The Go Runtime](#the-go-runtime)
+    - [Built-in `make`](#built-in-make)
+    - [Declaring Your Slice](#declaring-your-slice)
+    - [Slicing Slices](#slicing-slices)
+      - [Slices share storage sometimes](#slices-share-storage-sometimes)
+    - [Converting Arrays to Slices](#converting-arrays-to-slices)
+    - [Built-in `copy`](#built-in-copy)
+  - [Strings, Runes and Bytes](#strings-runes-and-bytes)
+  - [Maps](#maps)
+    - [Reading and Writing a Map](#reading-and-writing-a-map)
+    - [The comma ok idiom](#the-comma-ok-idiom)
+    - [Deleting from Maps](#deleting-from-maps)
+    - [Using Maps as Sets](#using-maps-as-sets)
+  - [Structs](#structs)
+    - [Anonymous Structs](#anonymous-structs)
+    - [Comparing and Converting Structs](#comparing-and-converting-structs)
+  - [Wrapping Up](#wrapping-up)
+<!--toc:end-->
+
 ## Arrays - Too Rigid to Use Directly
 Go has arrays like most languages but they are rarely used directly. All the elements in the array must be of the specified type and there are a fed different declaration styles:
 ```go
