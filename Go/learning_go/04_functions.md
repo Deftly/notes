@@ -334,6 +334,89 @@ func DoSomeInserts(ctx context.Context, db *sql.DB, value1, value2 string) (err 
 ```
 In this example we create a transaction to do a series of database inserts. If any of them fail we want to roll back(not modify the database). If all of them succeed we want to commit(store the database changes). We use a closure with `defer` to check if `err` has been assigned a value. If it hasn't, we run a `txCommit()`, not that this can also return an error. If it does, the value `err` is modified and we can call `tx.Rollback()`.
 
+A common pattern in Go is for a function that allocates a resource to also return a closure that cleans up the resource. We could add such a function to our simple `cat` program:
+```go
+func getFile(name string) (*os.File, func(), error) {
+  file, err := os.Open(name)
+  if err != nil {
+    return nil, nil, err
+  }
+  return file, func() {
+    file.Close()
+  }, nil
+}
+```
+This helper function returns a file, a function, and an error and we can use it in our main function like so:
+```go
+f, closer, err := getFile(os.Args[1])
+if err != nil {
+  log.Fatal(err)
+}
+defer closer()
+```
+Because Go doesn't allow unused variables, returning the `closer` from the function means that the program will not compile if the function is not called.
+
 ## Go is Call By Value
+Go is a *call by value* language which means that when you supply a variable for a parameter to a function, Go *always* makes a copy of the value of the variable. Let's look at an example:
+```go
+type person struct {
+  age int
+  name string
+}
+
+func modifyFails(i, int, s string, p person) {
+  i = i * 2
+  s = "Goodbye"
+  p.name = "Bob"
+}
+
+func main() {
+  p := person{}
+  i := 2
+  s := "Hello"
+  modifyFails(i, s, p)
+  fmt.Println(i, s, p) // 2 Hello {0 }
+}
+```
+As we can see, the function fails to modify the values of the parameters passed to it, this property applies to primitives and to structs and reason for that has to do with pointers.
+
+Things are different for maps and slices:
+```go
+func modMap(m map[int]string) {
+  m[2] = "hello"
+  m[3] = "goodbye"
+  delete(m, 1)
+}
+
+func modSlice(s []int) {
+  for i, v := range s {
+    s[i] = v * 2
+  }
+  s = append(s, 10)
+}
+
+func main() {
+  m := map[int]string {
+    1: "first",
+    2: "second",
+  }
+  modMap(m)
+  fmt.Println(m) // map[2:hello 3:goodbye]
+
+  s := []int{1, 2, 3}
+  modSlice(s)
+  fmt.Println(s) // [2 4 6]
+}
+```
+All the changes made to the map parameter are reflected in the variable passed into the function. For the slice, we can modify any element in the slice, but you can't lengthen the slice. These properties hold true for maps and slices passed directly into functions as well as map and slice fields in structs.
+
+The reason why maps and slices behave differently than the other types is because maps and slices are both implemented with pointers, which we'll cover in the [next section](./05_pointers.md).
+
+> **_NOTE:_** Every type in Go is a value type. It's just that sometimes the value is a pointer.
+
+Call by value is one of the reasons why Go's limited support for constants is only a minor handicap. Since variables are passed by value, you can be sure that calling a function doesn't modify the variable whose value was passed in(unless the variable is a slice or map). In general, this makes it easier to understand the flow of data.
+
+While this approach is easy to understand, there are cases where you need to pass something mutable to a function and that's where you need a pointer.
 
 ## Wrapping UP
+This section covered functions in Go and their unique features. The next section will cover pointers and how to use them to write efficient programs.
