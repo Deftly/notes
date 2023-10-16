@@ -222,12 +222,117 @@ One thing that closures allow you to do is limit a function's scope. If a functi
 When closures become really interesting is when they are passed to other functions or returned from a function. This allows you to take the variables within your function and use those variables *outside* of your function.
 
 ### Passing Functions as Parameters
+Because functions are values and you can specify the type of a function you can pass functions as parameters into functions. Think about the implications of creating a closure that references local variables and then passing that closure to another function. This pattern can be very useful and appears several time in the standard library.
 
+Let's see how closures are used to sort the same data in different ways:
+```go
+type Person struct {
+  FirstName string
+  LastName string
+  Age int
+}
+
+people := []Person{
+  {"Pat", "Patterson", 37},
+  {"Tracy", "Bobbert", 23},
+  {"Fred", "Fredson", 18},
+}
+fmt.Println(people)
+//sort by last name
+sort.Slice(people, func(i int, j int) bool {
+  return people[i].LastName < people[j].LastName
+})
+fmt.Println(people)
+//sort by age
+sort.Slice(people, func(i int, j int) bool {
+  return people[i].Age < people[j].Age
+})
+fmt.Println(people)
+```
+> **_NOTE:_** The people slice is changed by the call to `sort.Slice`, we'll cover this briefly in the section [Go is Call By Value](#go-is-call-by-value)
+
+Passing functions as parameters to other functions is often useful for performing different operations on the same kind of data.
 
 ### Returning Functions from Functions
+You can also return a closure from a function, let's take a look at an example:
+```go
+func makeMult(base int) func(int) int {
+  return func(factor int) int {
+    return base * factor
+  }
+}
 
-
+func main() {
+  twoBase := makeMult(2)
+  threeBase := makeMult(3)
+  for i := 0; i < 3; i++ {
+    fmt.Println(twoBase(i), threeBase(i))
+  }
+}
+```
+This gives us the following output:
+```shell
+0 0
+2 3
+4 6
+```
 ## Keyword `defer`
+Programs often create temporary resources, like files or network connections. These have to be cleaned up regardless of where the function exits or whether it completed successfully or not. In Go, the cleanup code is attached to the function with the `defer` keyword.
+
+As an example we'll write a simple version of `cat`, a Unix utility for printing the contents of a file:
+```go
+func main() {
+  if len(os.Args) < 2 {
+    log.Fatal("no file specified")
+  }
+  f, err := os.Open(os.Args[1])
+  if err != nil {
+    log.Fatal(err)
+  }
+  defer f.Close()
+  data := make([]byte, 2048)
+  for {
+    count, err := f.Read(data)
+    os.Stdout.Write(data[:count])
+    if err != nil {
+      if err != io.EOF {
+        log.Fatal(err)
+      }
+      break
+    }
+  }
+}
+```
+There are a lot of new features in this example but for now we'll focus on the parts that relate to using `defer`. In the example we open a file handle. Once we know we have a valid file we will need to close it no matter how we exit the function. To ensure the cleanup code runs, we use the `defer` keyword followed by a function/method call. In this case, we use the `Close` method on the file variable. Normally the function call would run immediately but `defer` delays the invocation until the surrounding function exits.
+
+You can `defer` multiple closures in a Go function. They will run in last-in-first-out order, which is to say the last `defer` registered runs first.
+
+The code within `defer` closures run *after* the return statement. You can supply a function with input parameters to a `defer`, just be sure to remember that any variables passed into a deferred closure aren't evaluated until the closure runs.
+
+Deferred functions can also examine or modify the return values of the surround function by making use of named return values. This allows us to take actions based on an error, in a later section we'll cover a pattern that uses a `defer` to add contextual information to an error returned from a function. Now let's look at an example:
+```go
+func DoSomeInserts(ctx context.Context, db *sql.DB, value1, value2 string) (err error) {
+  tx, err := db.BeginTx(ctx, nil)
+  if err != nil {
+    return err
+  }
+  defer func() {
+    if err == nil {
+      err = tx.Commit()
+    }
+    if err != nil {
+      tx.Rollback()
+    }
+  }()
+  _, err = tx.ExecContext(ctx, "INSERT INTO FOO (val) values $1", value1)
+  if err != nil {
+    return err
+  }
+  // use tx to do more database inserts 
+  return nil
+}
+```
+In this example we create a transaction to do a series of database inserts. If any of them fail we want to roll back(not modify the database). If all of them succeed we want to commit(store the database changes). We use a closure with `defer` to check if `err` has been assigned a value. If it hasn't, we run a `txCommit()`, not that this can also return an error. If it does, the value `err` is modified and we can call `tx.Rollback()`.
 
 ## Go is Call By Value
 
