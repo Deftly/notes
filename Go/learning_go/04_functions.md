@@ -419,4 +419,4 @@ Call by value is one of the reasons why Go's limited support for constants is on
 While this approach is easy to understand, there are cases where you need to pass something mutable to a function and that's where you need a pointer.
 
 ## Wrapping UP
-This section covered functions in Go and their unique features. The next section will cover pointers and how to use them to write efficient programs.
+This section covered functions in Go and their unique features. The [next section](./05_pointers.md) will cover pointers and how to use them to write efficient programs.
