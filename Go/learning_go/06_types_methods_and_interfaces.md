@@ -239,9 +239,64 @@ The first constant in the `const` block has the type specified and its value is 
 The important thing to understand is that there is nothing in Go to stop you from creating additional values of your type. Also, if you insert a new identifier in the middle of your list of literals, all of the subsequent ones will be renumbered. This will break your application if those constants represent values in another system or database. Because of these limitations, `iota`-based enumerations only make sense when you care about being able to differentiate between a set of values and don't care about the value itself.
 
 ## Use Embedding for Composition
+Go encourages code reuse via built-in support for composition and promotion:
+```go
+type Employee struct {
+	Name string
+	ID   string
+}
 
+func (e Employee) Description() string {
+	return fmt.Sprintf("%s (%s)", e.Name, e.ID)
+}
 
+type Manager struct {
+	Employee
+	Reports []Employee
+}
+
+func (m Manager) FindNewEmployees() []Employee {
+	// do business logic
+}
+```
+Notice that `Manager` contains a field of type `Employee`, but no name is assigned to that field. This makes `Employee` an *embedded field*. Any fields of methods declared on an embedded field are *promoted* to the containing struct and can be invoked directly enabling the following: 
+```go
+func main() {
+	m := Manager{
+		Employee: Employee{
+			Name: "Bob Bobson",
+			ID:   "12345",
+		},
+		Reports: []Employee{},
+	}
+	fmt.Println(m.ID) // prints 12345
+	fmt.Println(m.Description()) // prints Bob Bobson (12345)
+}
+```
+If the containing struct has fields or methods with the same name as an embedded field, you need to use the embedded field's type to refer to the obscured fields or methods:
+```go
+type Inner struct {
+	X int
+}
+
+type Outer struct {
+	Inner
+	X int
+}
+
+func main() {
+	o := Outer{
+		Inner: Inner{
+			X: 10,
+		},
+		X: 20,
+	}
+	fmt.Println(o.X)       // 20
+	fmt.Println(o.Inner.X) // 10
+}
+```
 ## Embedding is Not Inheritance
+
 
 ## A Quick Lesson on Interfaces
 
