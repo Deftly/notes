@@ -296,11 +296,115 @@ func main() {
 }
 ```
 ## Embedding is Not Inheritance
-
+Built-in embedding supports is rate in programming languages and many developer try to understand embedding by treating it as inheritance, don't do this. You cannot assign a variable of type `Manager` to a variable of type `Employee`. If you want to access the `Employee` field in `Manager`, you must do so explicitly:
+```go
+var eFail Employee = m // error: cannot use m (type Manager) as type Employee in assignment
+var eOk Employee = m.Employee
+```
+While embedding one concrete type inside another won't allow you to treat the outer type as the inner type, the methods on an embedded field do count toward the *method set* of the containing struct. This means they can allow the containing struct implement an interface.
 
 ## A Quick Lesson on Interfaces
+Implicit interfaces are the only abstract type in Go. You declare an interface like other user-defined types using the `type` keyword:
+```go
+typer Stringer interface {
+  String() string
+}
+```
+In an interface declaration, an interface literal appears after the name of the interface which lists the methods that must be implemented by a concrete type to meet the interface. The methods defined by an interface are called the method set of the interface.
+
+Interfaces are usually named with "er" endings: `fmt.Stringer`, `io.Reader`, `io.Closter`, `io.ReadCloser`, `json.Marshaler`, `http.Handler`.
 
 ## Interfaces Are Type-Safe Duck Typing
+What makes Go's interfaces special is that they are implemented *implicitly*. A concrete type does not declare that it implements an interface. If a method set for a concrete type contains all the methods in the method set of for an interface, the concrete type implements the interface. This means that the concrete type can be assigned to a variable or field declared to be of the type of the interface.
+
+This implicit behavior of types in Go enables both type-safely and decoupling, bridging the functionality in both static and dynamic languages.
+
+The reason why languages have interfaces is to allow you to "Program to an interface, not an implementation". This lets you depend on a behavior, not an implementation, meaning you can swap implementations as needed.
+
+Dynamically typed languages like Python or JavaScript don't have interfaces. Instead, those developers use "duck typing". This is based on the expression "If it walks like a duck and quacks like a duck, it's a duck". The concept is that you can pass an instance of a type as parameter to a function as longs as the function can find a method to invoke that it expects:
+```python
+def animal_sound(animal):
+  animal.speak()
+
+class Dog:
+  def speak(self):
+    print("Woof")
+
+class Cat:
+  def speak(self):
+    print("Meow")
+
+d = Dog()
+c = Cat()
+animal_sound(d) # Output: Woof
+animal_sound(c) # Output: Meow
+```
+Java developers use a different pattern:
+```java 
+// Explicit Interfaces in Java
+interface Animal {
+    void speak();
+}
+
+class Dog implements Animal {
+    public void speak() {
+        System.out.println("Woof");
+    }
+}
+
+class Cat implements Animal {
+    public void speak() {
+        System.out.println("Meow");
+    }
+}
+
+public class Main {
+    public static void animalSound(Animal animal) {
+        animal.speak();
+    }
+
+    public static void main(String[] args) {
+        Animal d = new Dog();
+        Animal c = new Cat();
+
+        animalSound(d);  // Output: Woof
+        animalSound(c);  // Output: Meow
+    }
+}
+```
+Go is a blend of the previous two styles:
+```go
+// Animal interface
+type Animal interface {
+    Speak() string
+}
+
+type Dog struct {}
+
+func (d Dog) Speak() string {
+    return "Woof"
+}
+
+type Cat struct {}
+
+func (c Cat) Speak() string {
+    return "Meow"
+}
+
+// animalSound function
+func animalSound(a Animal) {
+    fmt.Println(a.Speak())
+}
+
+func main() {
+    var d Animal = Dog{}
+    var c Animal = Cat{}
+
+    animalSound(d)  // Output: Woof
+    animalSound(c)  // Output: Meow
+}
+```
+
 
 ## Embedding and Interfaces
 
