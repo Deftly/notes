@@ -404,17 +404,158 @@ func main() {
     animalSound(c)  // Output: Meow
 }
 ```
+We've seen several interfaces in the standard library that are used for input and output. Having a standard interface is powerful. If you write your code to work with `io.Reader` and `io.Writer`, it will function correctly whether it is writing to a file on local disk disk or a value in memory.
 
+Interfaces encourage the *decorator pattern*. It is common in Go to write factory functions that take in an instance of an interface and return another type that implements the same interface. For example, say you have the following function:
+```go
+func process(r io.Reader) error
+```
+You can process data from a file with the following:
+```go
+r, err := os.Open(fileName)
+if err != nil {
+  return err
+}
+defer r.Close()
+return process(r)
+```
+The `os.File` instance returned by `os.Open` meets the `io.Reader` interface and can be used in any code that reads in data. If the file is gzip-compressed, you can wrap the `io.Reader` in another `io.Reader`:
+```go
+r, err := os.Open(fileName)
+if err != nil {
+  return err
+}
+defer r.Close()
+gz, err := gzip.NewReader(r)
+if err != nil {
+  return err
+}
+defer gz.Close()
+return process(gz)
+```
+> **_NOTE:_** If there's an interface in the standard library that describes what your code needs, use it!
+
+It's fine for a type that meets an interface to specify additional methods that aren't part of the interface. For example, the `io.File` type also meets the `io.Writer` interface. If your code only cares about reading from a file, use the `io.Reader` interface to refer to the file instance and ignore the other methods.
 
 ## Embedding and Interfaces
-
+Just like you can embed a type in a struct, you can embed an interface in an interface. For example, `io.ReadCloser` interface is built on an `io.Reader` and an `io.Closer`:
+```go
+type Reader interface {
+  Read(p []byte) (n int, err error)
+}
+type Closer interface {
+  Close() error
+}
+type ReadCloser interface {
+  Reader
+  Closer
+}
+```
 ## Accept Interfaces, Return Structs
+The saying "Accept interfaces, return structs" means that business logic invoked by your functions should be invoked via interfaces, but the output of your functions should be a concrete type. Functions that accept interfaces make your code more flexible and explicitly declare exactly what functionality is being used.
+
+If you return a concrete type new methods and fields can be added without breaking existing code. The same is not true for an interface. Adding a new method to an interface means that you need to update all existing implementations of the interface or your code breaks.
+
+Instead of writing a single factory function that returns different instances behind an interface based on input parameters, try to write separate factory functions for each concrete type. In some situations(such as a parser that can return one or more different kinds of tokens), it's unavoidable and you have no choice but to return an interface.
+
+Errors are the exception to this rule. Go functions and methods declare a return parameter of the `error` interface type. In the case of `error`, it's quite likely that different implementations of the interface could be returned so you need an interface to handle all possible options, as interfaces are the only abstract type in Go.
 
 ## Interfaces and `nil`
+In order for an interface to be considered `nil` *both* the type and the value must be `nil`:
+```go
+var s *string 
+fmt.Println(s == nil) // true
+var i interface{}
+fmt.Println(i == nil) // true
+i = s
+fmt.Println(i == nil) // false
+```
+In the Go runtime, interfaces are implemented as a pair of pointers, one to the underlying type and one to the underlying value. As long as the type is non-nil, the interface is non-nil(Since you can't have a variable without a type, if the value pointer is non-nil, the type pointer is always non-nil).
+
+What `nil` indicates for an interface is whether or not you can invoke methods on it. We saw earlier that you can invoke methods on `nil` concrete instances, so it makes sense that you can invoke methods on an interface that was assigned a `nil` concrete instance. If an interface is `nil`, invoking any methods on it triggers a panic. If an interface is non-nil, you can invoke methods on it(note that if the value is `nil` and the methods of the assigned type don't handle `nil`, you could still trigger a panic).
 
 ## The Empty Interface Says Nothing
+There are instance where you need a way to say that a variable could store any value, for this Go uses the empty interface:
+```go
+var i interface{}
+i = 20
+i = "hello"
+i = struct {
+  FirstName string
+  LastName string
+}{"Fred", "Fredson"}
+```
+`interface{}` isn't a special case syntax. It simply states that the variable can store any value whose type implements zero or more methods, which happens to match every type in Go. Because an empty interface doesn't tell you anything about the value it represents there isn't a lot you can do with it. A common use of the empty interface is a placeholder for data of uncertain schema that's read from an external source:
+```go
+data := map[string]interface{}{}
+contents, err := ioutil.ReadFile("testdata/sample.json")
+if err != nil {
+  return err
+}
+defer contents.Close()
+json.Unmarshal(contents, &data)
+```
+If you see a function that takes in an empty interface, it's likely that it is using reflection(we'll cover this in a later section) to either populate or read the value.
+
+Avoid using `interface{}` when possible, Go is designed as a strongly typed language and attempts to work around this are unidiomatic.
 
 ## Type Assertions and Type Switches
+Go provides two ways to see if a variable of an interface type has a specific concrete type or if the concrete type implements another interface. We'll start with *type assertions*. A type assertion names the concrete type that implemented the interface, or names another interface that is also implemented by the concrete type underlying an interface:
+```go
+type MyInt int
+
+func main() {
+	var i interface{}
+	var mine MyInt = 20
+	i = mine
+	i2 := i.(MyInt)
+	fmt.Println(i2 + 4)
+}
+```
+If the type conversion is wrong your code will panic:
+```go
+i2 := i.(string) // panic: interface conversion: interface {} is main.MyInt, not string
+fmt.Println(i2)
+```
+Even if two types share an underlying type, a type conversion must match the type of the underlying value:
+```go
+i2 := i.(int) // panic: interface conversion: interface {} is main.MyInt, not int 
+fmt.Println(i2 + 1)
+```
+To prevent crashing we can use the comma ok idiom like we saw in previous sections:
+```go
+i2, ok := i.(int) // ok set to true if conversion was successful
+if !ok {
+  return fmt.Errorf("unexpected type for %v", i)
+}
+fmt.Println(i2 + 1)
+```
+> **_NOTE:_** Type conversions can be applied to both concrete types and interfaces and are checked at compile time. Type assertions can only be applied to interface types and are checked at runtime. Conversions change, assertions reveal.
+
+Even if you are absolutely certain that your type assertion is valid use the comma ok idiom. You don't know how other people(or you in 6 months) will reuse your code.
+
+When an interface could be one of multiple possible types, use a *type switch* instead:
+```go
+func doThings(i interface{}) {
+	switch j := i.(type) {
+	case nil:
+		// i is nil, type of j is interface{}
+	case int:
+		// j is of type int
+	case MyInt:
+		// j is of type MyInt
+	case io.Reader:
+		// j is of type io.Reader
+	case string:
+		// j is a string
+	case bool, rune:
+		// i is either a bool or rune, so j is of type interface
+	default:
+		// no idea what i is, so j is of type interface{}
+	}
+}
+```
+> **_NOTE:_** Since the purpose of a type `switch` is to derive a new variable from an existing one, it is idiomatic to assign the variable being switched on to a variable of the same name(`i := i.(type)`), making this one of the few places where shadowing is a good idea.
 
 ## Use Type Assertions and Type Switches Sparingly
 
