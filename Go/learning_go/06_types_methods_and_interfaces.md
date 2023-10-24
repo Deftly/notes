@@ -5,6 +5,12 @@
   - [Types in Go](#types-in-go)
   - [Methods](#methods)
     - [Pointer Receivers and Value Receivers](#pointer-receivers-and-value-receivers)
+    - [Code Your Methods for `nil` Instances](#code-your-methods-for-nil-instances)
+    - [Methods Are Functions Too](#methods-are-functions-too)
+    - [Functions Versus Methods](#functions-versus-methods)
+    - [Type Declarations Aren't Inheritance](#type-declarations-arent-inheritance)
+    - [Types Are Executable Documentation](#types-are-executable-documentation)
+    - [`iota` Is for Enumerations - Sometimes](#iota-is-for-enumerations-sometimes)
   - [Use Embedding for Composition](#use-embedding-for-composition)
   - [Embedding is Not Inheritance](#embedding-is-not-inheritance)
   - [A Quick Lesson on Interfaces](#a-quick-lesson-on-interfaces)
@@ -15,9 +21,7 @@
   - [The Empty Interface Says Nothing](#the-empty-interface-says-nothing)
   - [Type Assertions and Type Switches](#type-assertions-and-type-switches)
   - [Use Type Assertions and Type Switches Sparingly](#use-type-assertions-and-type-switches-sparingly)
-  - [Function Types Are a Bridge to Interfaces](#function-types-are-a-bridge-to-interfaces)
   - [Implicit Interfaces Make Dependency Injection Easier](#implicit-interfaces-make-dependency-injection-easier)
-  - [Wire](#wire)
   - [Go Isn't Particularly Object-Oriented(and That's Great)](#go-isnt-particularly-object-orientedand-thats-great)
   - [Wrapping Up](#wrapping-up)
 <!--toc:end-->
@@ -558,13 +562,104 @@ func doThings(i interface{}) {
 > **_NOTE:_** Since the purpose of a type `switch` is to derive a new variable from an existing one, it is idiomatic to assign the variable being switched on to a variable of the same name(`i := i.(type)`), making this one of the few places where shadowing is a good idea.
 
 ## Use Type Assertions and Type Switches Sparingly
+For the most part, treat a parameter or return value as the type that was supplied and not what else it could be. Otherwise, your function's API isn't accurately describing what types it needs to perform its task. If you need a different type then it should be specified.
 
-## Function Types Are a Bridge to Interfaces
-
+One common use of type assertion is to see if the concrete type behind the interface also implements another interface. For example, the standard library uses this technique to allow more efficient copies when the `io.Copy` function is called. This function has two parameters of types `io.Writer` and `io.Reader` and calls the `io.copyBuffer` function to do its work. If the `io.Writer` parameter also implements `io.WriterTo`, or the `io.Reader` parameter implements `io.ReaderFrom`, most of the work of the function can be skipped:
+```go
+// copyBuffer is the actual implementation of Copy and CopyBuffer.
+// if buf is nil, one is allocated.
+func copyBuffer(dst Writer, src Reader, buf []byte) (written int64, err error) {
+	// If the reader has a WriteTo method, use it to do the copy.
+	// Avoids an allocation and a copy.
+	if wt, ok := src.(WriterTo); ok {
+		return wt.WriteTo(dst)
+	}
+	// Similarly, if the writer has a ReadFrom method, use it to do the copy.
+	if rt, ok := dst.(ReaderFrom); ok {
+		return rt.ReadFrom(src)
+	}
+  // function continues ...
+}
+```
+Type switch statements provide the ability to differentiate between multiple implementations of an interface that require different processing:
+```go
+func walkTree(t *treeNode) (int, error) {
+	switch val := t.val.(type) {
+	case nil:
+		return 0, errors.New("invalid expression")
+	case number:
+		// we know that t.val is of type number, so return the
+		// int value
+		return int(val), nil
+	case operator:
+		// We know that t.val is of type operator, so
+		// find the values of the left and right children, then
+		// call the process() method on operator to return the
+		left, err := walkTree(t.lchild)
+		if err != nil {
+			return 0, err
+		}
+		right, err := walkTree(t.rchild)
+		if err != nil {
+			return 0, err
+		}
+		return val.process(left, right), nil
+	default:
+		// If a new treeVal type is defined, but walkTree wasn't updated
+		// to process it, this detects it
+		return 0, errors.New("unknown node type")
+	}
+}
+```
 ## Implicit Interfaces Make Dependency Injection Easier
+Dependency injection is the concept that you code should explicitly specify the functionality it needs to perform its task. One of the surprising benefits of Go's implicit interfaces is that they make dependency injection an excellent way to decouple your code. Developers in other languages often use large, complicated frameworks to implement dependency injection. In Go it's easy to implement dependency injection without any additional libraries.
 
-## Wire
+Go's approach to interfaces is "implicit", meaning that a type doesn't need to explicitly declare that it implements an interface, it only needs to have the methods that the interface requires. This has several advantages when it comes to dependency injection:
+- **Simplicity**: You define an interface where you need it, specifying only the methods you'll actually use. This makes the contract between dependencies explicit and easy to understand.
+- **Easy Refactoring**: If you start with a concrete type and later decide you need an abstraction, you can define an interface that matches the existing method signatures. This means you can make your code more abstract without breaking existing functionality.
+- **Localized Interfaces**: In Go, it's idiomatic to define interfaces where they are used, rather than where a type is implemented. This localization of interfaces to the client code makes it easier to manage dependencies and understand their context.
+- **Interface Composition**: Go allows you to compose smaller interfaces to create more complex ones, making it easier to inject exactly the functionality a component needs:
+```go
+type ReadWriteCloser interface {
+  Reader
+  Writer
+  Closer
+}
+```
+Now let's look at a simple example:
+```go
+type Writer interface {
+	Write([]byte) (int, error)
+}
 
+func SaveFile(w Writer, content string) {
+	w.Write([]byte(content))
+}
+
+type FileWriter struct{}
+
+func (FileWriter) Write(bytes []byte) (int, error) {
+	fmt.Println("Writing to a file:", string(bytes))
+	return len(bytes), nil
+}
+
+type InMemoryWriter struct{}
+
+func (InMemoryWriter) Write(bytes []byte) (int, error) {
+	fmt.Println("Writing to memory:", string(bytes))
+	return len(bytes), nil
+}
+
+func main() {
+	fw := FileWriter{}
+	SaveFile(fw, "File content")
+
+	mw := InMemoryWriter{}
+	SaveFile(mw, "Memory content")
+}
+```
 ## Go Isn't Particularly Object-Oriented(and That's Great)
+It's hard to categorize Go as a particular style of language. It clearly isn't a strictly procedural language. At the same time, Go's lack of method overriding, inheritance, and objects means that it is not a particularly object-oriented language either. Go has function types and closures, but it isn't a functional language. Go borrows concepts from many places with the overriding goal of creating a language that is simple, readable, and maintainable.
 
 ## Wrapping Up
+This section covered, types, methods, interfaces, and their best practices. The [next section](./07_errors.md) will cover how to use one of Go's most controversial features: errors.

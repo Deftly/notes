@@ -6,3 +6,8 @@
 
 ## [Blocks, Shadows, and Control Structures](./03_blocks_shadows_and_control_structures.md)
 
+## [Functions](./04_functions.md)
+
+## [Pointers](./05_pointers.md)
+
+##  [Types, Methods, and Interfaces](./06_types_methods_and_interfaces.md)
