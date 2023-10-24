@@ -10,7 +10,7 @@
     - [Functions Versus Methods](#functions-versus-methods)
     - [Type Declarations Aren't Inheritance](#type-declarations-arent-inheritance)
     - [Types Are Executable Documentation](#types-are-executable-documentation)
-    - [`iota` Is for Enumerations - Sometimes](#iota-is-for-enumerations-sometimes)
+    - [Use `iota` for Enumerations - Sometimes](#use-iota-for-enumerations-sometimes)
   - [Use Embedding for Composition](#use-embedding-for-composition)
   - [Embedding is Not Inheritance](#embedding-is-not-inheritance)
   - [A Quick Lesson on Interfaces](#a-quick-lesson-on-interfaces)
@@ -223,7 +223,7 @@ It's understood that you should declare a struct type to hold a set of related d
 
 The same logic applies when declaring one user-defined type based on another user-defined type. When you have the same underlying data, but different sets of operations to perform, make two types.
 
-### `iota` Is for Enumerations - Sometimes
+### Use `iota` for Enumerations - Sometimes
 Go doesn't have an enumeration type. Instead, it has `iota`, which lets you assign an increasing value to a set of constants.
 
 When using `iota` the best practice is to first define a type based on `int` that will represent all of the valid values, then use a `const` block to define a set of values for  your type:
